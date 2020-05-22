@@ -1,0 +1,44 @@
+<div id="patient-count-box">
+	<div id="enrolled-patients" title="Total number of patients enrolled in the PrecisionLink Biobank matching your query.">
+		<span class="center large" id="spinner-total">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
+		<span id="patient-count" class="blue center large">{{#if queryRan}}{{#if countDisplayOverride}}{{> (countDisplayOverride) totalPatients}}{{else}}{{outputPanel_obfuscate totalPatients}}{{/if}}{{else}}-{{/if}}</span><br>
+		<span class="center medium">Patients Enrolled</span>
+	</div>
+	<br><br>
+	<div class="container" id="pic-sure-instances" title="The number of patients enrolled in the PrecisionLink Biobank matching your query with each of these sample types in the biobank.">		
+        <div class="row">
+            <span class="center">Samples available in Biobank:</span>
+        </div><br>
+        <div class="row">
+		{{#each resources}}
+				
+				<div class="col-md-6 right"><span>{{name}} : </span></div>
+				<div class="col-md-3 right">	<span id="patient-count-{{id}}">{{#if queryRan}}{{#if ../countDisplayOverride}}{{> (../countDisplayOverride) patientCount}}{{else}}{{outputPanel_obfuscate  patientCount}}{{/if}}{{else}}-{{/if}}</span>
+					<span id="spinner-{{id}}">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
+				</div>
+				<div class="col-md-3"></div>
+				<div class="w-100"></div>
+		{{/each}}
+		</div>
+	</div>
+	<br/>
+	<div class="container query-result-container">
+	{{#if picSureResultId}}
+	<div class="row">
+		<span class="picsure-result-id-label col-md-12"> BiobankPortal Query ID:</span><br>
+		<span class="picsure-result-id col-md-12">{{picSureResultId}}</span><br>
+		<span class="col-md-12 copy-button-span"><button class="fa fa-files-o copy-button" title="Copy Query ID"> Copy Query ID</button></span>
+	</div>
+	<div class="row"><br></div>
+	<div class="row center">
+		<form action="https://is.gd/BiobankSampleDataRequest" method="get" target="_blank">
+         <button class="callToAction bch-tooltip fa fa-lock" type="submit" title="Need to be in BCH network or connected via VPN"> REQUEST</button> specimens and data
+      	</form>
+	</div>
+	{{/if}}
+	</div>
+</div>
+<div id="extended-info">
+<link rel="stylesheet" href="/picsureui/webjars/jstree/3.3.7/themes/default/style.min.css"></link>
+<div id="concept-tree-div">
+</div>
