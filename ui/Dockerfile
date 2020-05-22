@@ -30,5 +30,9 @@ COPY src/main/webapp/picsureui /usr/local/apache2/htdocs/picsureui/
 COPY src/main/webapp/psamaui /usr/local/apache2/htdocs/psamaui/
 COPY src/main/resources/favicon.ico /usr/local/apache2/htdocs/
 
-COPY horizontal-logo.png ${HTTPD_PREFIX}/htdocs/picsureui/static/logo.png
-COPY stacked-logo.png ${HTTPD_PREFIX}/htdocs/images/logo.png
+#COPY horizontal-logo.png ${HTTPD_PREFIX}/htdocs/picsureui/static/logo.png
+#COPY stacked-logo.png ${HTTPD_PREFIX}/htdocs/images/logo.png
+
+#currently only one logo img
+COPY logo.png ${HTTPD_PREFIX}/htdocs/picsureui/static/logo.png
+COPY logo.png ${HTTPD_PREFIX}/htdocs/images/logo.png
