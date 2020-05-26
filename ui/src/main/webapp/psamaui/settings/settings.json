@@ -1,0 +1,7 @@
+{
+  "helpLink": "about:blank",
+  "advancedSearchLink": "",
+  "customizeAuth0Login": true,
+  "basePath": "/psama",
+  "client_id": "__AUTH0_CLIENT_ID__"
+}
