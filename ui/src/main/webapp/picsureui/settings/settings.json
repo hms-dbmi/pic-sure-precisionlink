@@ -47,7 +47,7 @@
   "defaultValues": {
                    "\\Notes" : "POSITIVE"
                    },
-  "useAsyncQuery": true,
+  "queryExportType":"EXPORT_DISABLED",
   "analyticsId": "UA-70908320-4"
 }
 
