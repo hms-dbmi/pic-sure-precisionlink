@@ -4,7 +4,35 @@
                         "id" : "PrecisionLink",
                         "name" : "PrecisionLink",
                         "basePath" : "/picsure",
-                        "findPath" : "/PIC-SURE/search"
+                        "findPath" : "/PIC-SURE/search",
+			"subQueries" : [
+				{
+					"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\Bio Specimens:HF.BLD.000\\",
+					"name" : "Whole Blood",
+					"id" : "HumanFluid"
+				},
+				{
+					"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\Bio Specimens:HF.PLS.000\\",
+					"name" : "Plasma",
+					"id" : "HumanPlasma"
+				},
+				{
+					"additionalPui" : "\\Bio Specimens\\HumanTissue\\",
+					"name" : "Tissue",
+					"id" : "HumanTissue"
+				},
+				{
+					"additionalPui" : "\\Bio Specimens\\NucleicAcid\\",
+					"name" : "Extracted DNA",
+					"id" : "NucleicAcid"
+				},
+				{
+					"additionalPui" : "\\Next Generation Sequencing\\Exomes\\",
+					"name" : "DNA Sequencing",
+					"id" : "genomicCount",
+					"disabled_additionalVariantCategory": "{\"Variant_severity\": [\"LOW\"]}"
+				}
+				]
                 }
                 ],
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",

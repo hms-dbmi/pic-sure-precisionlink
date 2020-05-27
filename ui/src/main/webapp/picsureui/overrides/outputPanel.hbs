@@ -11,13 +11,14 @@
         </div><br>
         <div class="row">
 		{{#each resources}}
-				
+				{{#if additionalPui}}
 				<div class="col-md-6 right"><span>{{name}} : </span></div>
 				<div class="col-md-3 right">	<span id="patient-count-{{id}}">{{#if queryRan}}{{#if ../countDisplayOverride}}{{> (../countDisplayOverride) patientCount}}{{else}}{{outputPanel_obfuscate  patientCount}}{{/if}}{{else}}-{{/if}}</span>
 					<span id="spinner-{{id}}">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
 				</div>
 				<div class="col-md-3"></div>
 				<div class="w-100"></div>
+				{{/if}}
 		{{/each}}
 		</div>
 	</div>
