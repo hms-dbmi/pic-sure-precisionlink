@@ -21,6 +21,13 @@ function( outputTemplate){
 		renderOverride : undefined,
 
 		/*
+		 *Override the behavior of the data selection panel when updating the query 
+		 */
+		selectOverride: function(){
+			//no op;  disable output panel
+		},
+
+		/*
 		 * If you want to replace the entire Backbone.js Model that is used for
 		 * the output panel, define it here.
 		 */
