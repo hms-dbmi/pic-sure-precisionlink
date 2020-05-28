@@ -15,14 +15,9 @@ define([],function(){
 			 *  "picSure/queryBuilder" : "path/in/src/main/javascript/newQueryBuilder",
 			 *  "common/login" : "path/in/src/main/javascript/newLogin"
 			 */
-			"output/dataSelection" : "overrides/output/dataSelection",
-			"common/mainLayout" : "overrides/mainLayout",
-			"picSure/queryBuilder" : "overrides/query/queryBuilder",
 			"filter/searchResults" : "overrides/filter/searchResults",
 			"filter/searchResult" : "overrides/filter/searchResult",
-			"filter/searchResultTabs" : "overrides/filter/searchResultTabs",
-			"filter/searchHelpTooltip" : "overrides/filter/searchHelpTooltip",
-			"common/startup" : "overrides/common/startup"
+			"filter/searchHelpTooltip" : "overrides/filter/searchHelpTooltip"
 		}
 	});	
 });

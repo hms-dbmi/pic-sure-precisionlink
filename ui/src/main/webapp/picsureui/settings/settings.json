@@ -48,6 +48,7 @@
                    "\\Notes" : "POSITIVE"
                    },
   "queryExportType":"EXPORT_DISABLED",
+  "queryButtonLabel":"Prepare Data Export",
   "analyticsId": "UA-70908320-4"
 }
 
