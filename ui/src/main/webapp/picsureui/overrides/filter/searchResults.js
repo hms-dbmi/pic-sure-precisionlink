@@ -29,7 +29,9 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 		var parentCategorySearchResults = [];
 		
 		var compiledSubCategoryTemplate = this.searchSubCategories;
-		$('.search-tabs', filterView.$el).append(this.searchResultTabs(aliases));
+		$('.search-tabs', filterView.$el).append(this.searchResultTabs(
+				{filterId: filterView.model.attributes.filterId,
+				 aliases: aliases}	));
 		keys.forEach((key) => {
 			var subCategories = [];
 			var categorySearchResultViews = [];
