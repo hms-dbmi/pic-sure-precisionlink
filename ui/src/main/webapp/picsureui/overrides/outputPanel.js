@@ -1,4 +1,4 @@
-define([ "text!overrides/outputPanel.hbs" ],
+define([ "text!overrides/output/outputPanel.hbs" ],
 function( outputTemplate){
     
     return {
