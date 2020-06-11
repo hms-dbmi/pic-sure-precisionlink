@@ -69,6 +69,11 @@ function($, HBS, BB, settings, searchResults){
 		
 		},
 		render: function(){
+			
+			//add random ID to each filter so that we can separate the nav tabs (bootstrap feature)
+			if(this.model.attributes.filterId == undefined){
+				this.model.attributes.filterId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+			}
 			this.$el.html(this.template(this.model.attributes));
 
 			if(this.model.attributes.valueType ==="ANYRECORDOF"){
