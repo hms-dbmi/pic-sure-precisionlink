@@ -1,6 +1,6 @@
 {
   "helpLink": "mailto:bchbiobank4discovery@childrens.harvard.edu",
-  "pdfLink":"https://precisionlink-biobank4discovery.childrens.harvard.edu/static/user_guide.pdf",
+  "pdfLink":"http://biobank.childrens.harvard.edu/user_guide.pdf",
   "logoPath":"/picsureui/static/logo.png",
   "advancedSearchLink":"",
   "customizeAuth0Login":true,
