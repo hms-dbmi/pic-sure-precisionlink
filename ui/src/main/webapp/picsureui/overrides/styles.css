@@ -63,6 +63,7 @@ body {
 }
 
 .logo-img {
+    max-height: unset;
     padding-top: 10px;
 }
 
