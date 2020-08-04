@@ -38,7 +38,7 @@
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",
   "applicationIdForBaseQuery":"__STACK_SPECIFIC_APPLICATION_ID__",
   "helpLink": "mailto:bchbiobank4discovery@childrens.harvard.edu",
-  "pdfLink":"https://precisionlink-biobank4discovery.childrens.harvard.edu/static/user_guide.pdf",
+  "pdfLink":"http://biobank.childrens.harvard.edu/user_guide.pdf",
   "categorySearchResultList":["Demographics","Diagnosis","Clinic_Site","Medications","Procedures","Laboratory_Results","Radiology_Tests_Ordered","Clinical_Notes","Vital_Signs","Allergies","Insurance_Payors","Bio_Specimens","Protocols"],
   "timeout": 900,
   "categoryAliases": {
