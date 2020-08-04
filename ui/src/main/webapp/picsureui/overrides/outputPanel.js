@@ -7,13 +7,7 @@ function( outputTemplate){
 		 * partial that will be used to render the count. The Handlebars partial
 		 * should be registered at the top of this module.
 		 */
-		countDisplayOverride : function(count){
-			if(count < 10){
-				return "< 10";
-			} else {
-				return count;
-			}
-		},
+		countDisplayOverride : undefined,
 		/*
 		 * This is a function that if defined replaces the normal render
 		 * function from outputPanel.
