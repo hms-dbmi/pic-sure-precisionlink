@@ -60,7 +60,10 @@ function( outputTemplate, settings, transportErrors){
 		        && (!query.query.anyRecordOf || query.query.anyRecordOf.length == 0) 
 		      	&& _.keys(query.query.numericFilters).length==0 
 				&& _.keys(query.query.categoryFilters).length==0
-				&& _.keys(query.query.variantInfoFilters).length==0
+				&& (_.keys(query.query.variantInfoFilters).length==0
+						|| (_.keys(query.query.variantInfoFilters).length==1 
+								&& _.keys(query.query.variantInfoFilters[0].categoryVariantInfoFilters).length==0 
+								&& _.keys(query.query.variantInfoFilters[0].numericVariantInforFilters).length==0))
 				&& _.keys(query.query.categoryFilters).length==0);
 		},
 		/*
@@ -149,6 +152,7 @@ function( outputTemplate, settings, transportErrors){
 		 */
 		runQuery: function(defaultOutput, incomingQuery, defaultDataCallback, defaultErrorCallback){
 			var model = defaultOutput.model;
+			model.resources = this.resources;
 			model.set("totalPatients",0);
 			model.spinAll();
 			
