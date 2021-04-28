@@ -90,56 +90,58 @@ function( outputTemplate, settings, transportErrors){
 		outputTemplate: outputTemplate,
 		
 		dataCallback: function(resource, result, resultId, model, defaultOutput){
-				var count = parseInt(result);
+			var count = parseInt(result);
+			var model = defaultOutput.model;
 			
-				//if this is the main resource query, set total patients
-				if(resource.additionalPui == undefined){
-					model.set("totalPatients", count);
-					/// set this value so RedCap (data export request) fields will be displayed
-					if(!this.isDefaultQuery(model.get("query"))){
-						model.set("picSureResultId", resultId);
-					} else {
-						model.set("picSureResultId", undefined);
-					}
-				}
-				
-				resources[resource.id].queryRan = true;
-				resources[resource.id].patientCount = count;
-				resources[resource.id].spinning = false;
-					
-				defaultOutput.render();
-				
-				if(_.every(resources, (resource)=>{return resource.spinning==false})){
-					model.set("spinning", false);
-					model.set("queryRan", true);
+			//if this is the main resource query, set total patients
+			if(resource.additionalPui == undefined){
+				model.set("totalPatients", count);
+				/// set this value so RedCap (data export request) fields will be displayed
+				if(!this.isDefaultQuery(model.get("query"))){
+					model.set("picSureResultId", resultId);
 				} else {
-					console.log("still waiting");
+					model.set("picSureResultId", undefined);
 				}
+			}
+			
+			resources[resource.id].queryRan = true;
+			resources[resource.id].patientCount = count;
+			resources[resource.id].spinning = false;
+				
+			defaultOutput.render();
+			
+			if(_.every(resources, (resource)=>{return resource.spinning==false})){
+				model.set("spinning", false);
+				model.set("queryRan", true);
+			} else {
+				console.log("still waiting");
+			}
 		},
 		
 		errorCallback: function(resource, message, defaultOutput){
-				if(resource.additionalPui == undefined){
-					model.set("totalPatients", '-');
-				}
-				
-				resources[resource.id].queryRan = true;
-				resources[resource.id].patientCount = '-';
-				resources[resource.id].spinning = false;
-				
-				if(_.every(resources, (resource)=>{return resource.spinning==false})){
-					model.set("spinning", false);
-					model.set("queryRan", true);
-				} else {
-					console.log("still waiting");
-				}
-				
-				defaultOutput.render();
-				
-				if(resource.additionalPui == undefined){
-					$("#patient-count").html(message);
-				} else {
-					console.log("error in query");
-				}
+			var model = defaultOutput.model;
+			if(resource.additionalPui == undefined){
+				model.set("totalPatients", '-');
+			}
+			
+			resources[resource.id].queryRan = true;
+			resources[resource.id].patientCount = '-';
+			resources[resource.id].spinning = false;
+			
+			if(_.every(resources, (resource)=>{return resource.spinning==false})){
+				model.set("spinning", false);
+				model.set("queryRan", true);
+			} else {
+				console.log("still waiting");
+			}
+			
+			defaultOutput.render();
+			
+			if(resource.additionalPui == undefined){
+				$("#patient-count").html(message);
+			} else {
+				console.log("error in query");
+			}
 		},
 		
 		/*
@@ -200,7 +202,7 @@ function( outputTemplate, settings, transportErrors){
 				 	error: function(response){
 						if (!transportErrors.handleAll(response, "Error while processing query")) {
 							response.responseText = "<h4>"
-								+ overrides.outputErrorMessage ? overrides.outputErrorMessage : "There is something wrong when processing your query, please try it later, if this repeats, please contact admin."
+								+ this.outputErrorMessage;
 								+ "</h4>";
 					 		this.errorCallback(resource, response.responseText, defaultOutput);
 						}
