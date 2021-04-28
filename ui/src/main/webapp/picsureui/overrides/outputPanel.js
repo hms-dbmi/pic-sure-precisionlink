@@ -1,7 +1,35 @@
-define([ "text!overrides/output/outputPanel.hbs" ],
-function( outputTemplate){
+define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings" ],
+function( outputTemplate, settings){
+	
+	var resources = {};
+	
+	_.each(settings.resources, (resource) => {
+		
+		//base resource first; this will be the 'all patients' or main query
+		resources[resource.id] = {
+				id: resource.id,
+				name: resource.name,
+				patientCount: 0,
+				spinnerClasses: "spinner-center ",
+				spinning: false
+		};
+		
+		//then check to see if we have sub queries for this resource - add those as 'resource' items as well
+		_.each(resource.subQueries, (resource) => {
+  			resources[resource.id] = {
+  					id: resource.id,
+  					name: resource.name,
+  					additionalPui: resource.additionalPui,
+  					patientCount: 0,
+  					spinnerClasses: "spinner-small spinner-small-center ",
+  					spinning: false
+  			};
+		});
+	});
     
     return {
+    	
+    	resources: resources,
 		/*
 		 * This should be a function that returns the name of a Handlebars
 		 * partial that will be used to render the count. The Handlebars partial
@@ -26,14 +54,7 @@ function( outputTemplate){
 		 * the output panel, define it here.
 		 */
 		modelOverride : undefined,
-		dataCallback: function(query, resultId, model) {
-			// set this value so RedCap (data export request) fields will be displayed
-			if(!this.isDefaultQuery(query)){
-				model.set("picSureResultId", resultId);
-			} else {
-				model.set("picSureResultId", undefined);
-			}
-        },
+		
         isDefaultQuery: function(query){
 			return (query.query.requiredFields.length == 0 
 		        && (!query.query.anyRecordOf || query.query.anyRecordOf.length == 0) 
@@ -64,8 +85,128 @@ function( outputTemplate){
 		 * If you want to show your customized error message, please override
 		 * this
 		 */
-		outputErrorMessage: "There are over 100,000 variants that match your filter, please narrow your criteria by adding new variant filters or adjusting your current ones.",
+		outputErrorMessage: "A server error occurred. please use the help link for further support.",
 		
-		outputTemplate: outputTemplate
+		outputTemplate: outputTemplate,
+		
+		dataCallback: function(resource, result, resultId, model, defaultOutput){
+				var count = parseInt(result);
+			
+				//if this is the main resource query, set total patients
+				if(resource.additionalPui == undefined){
+					model.set("totalPatients", count);
+					/// set this value so RedCap (data export request) fields will be displayed
+					if(!this.isDefaultQuery(query)){
+						model.set("picSureResultId", resultId);
+					} else {
+						model.set("picSureResultId", undefined);
+					}
+				}
+				
+				model.get("resources")[resource.id].queryRan = true;
+				model.get("resources")[resource.id].patientCount = count;
+				model.get("resources")[resource.id].spinning = false;
+					
+				defaultOutput.render();
+				
+				if(_.every(model.get('resources'), (resource)=>{return resource.spinning==false})){
+					model.set("spinning", false);
+					model.set("queryRan", true);
+				} else {
+					console.log("still waiting");
+				}
+		},
+		
+		errorCallback: function(resource, message, defaultOutput){
+				if(resource.additionalPui == undefined){
+					model.set("totalPatients", '-');
+				}
+				
+				model.get("resources")[resource.id].queryRan = true;
+				model.get("resources")[resource.id].patientCount = '-';
+				model.get("resources")[resource.id].spinning = false;
+				
+				if(_.every(model.get('resources'), (resource)=>{return resource.spinning==false})){
+					model.set("spinning", false);
+					model.set("queryRan", true);
+				} else {
+					console.log("still waiting");
+				}
+				
+				defaultOutput.render();
+				
+				if(resource.additionalPui == undefined){
+					$("#patient-count").html(message);
+				} else {
+					console.log("error in query");
+				}
+		},
+		
+		/*
+		 * The new hook for overriding all custom query logic
+		 */
+		runQuery: function(defaultOutput, incomingQuery, defaultDataCallback, defaultErrorCallback){
+			var model = defaultOutput.model;
+			model.set("totalPatients",0);
+			model.spinAll();
+			
+			
+			
+			//clear out the result count for resources/subqueries if we have no filters.  TODO: not sure why this is happening
+			//we can't check for 'required fields' here because the subqueries may use that to drive some selection
+  			if (incomingQuery.query.requiredFields.length == 0
+				&& _.keys(incomingQuery.query.numericFilters).length==0 
+				&& _.keys(incomingQuery.query.categoryFilters).length==0
+				&& _.keys(incomingQuery.query.variantInfoFilters).length==0
+				&& _.keys(incomingQuery.query.categoryFilters).length==0) {
+  				_.each(model.get('resources'), function(picsureInstance){
+	  					picsureInstance.id.patientCount = 0;
+	  				}.bind(this));
+	  			}
+			
+			this.render();
+
+			//run a query for each resource 
+			_.each(resources, function(resource){
+				// make a safe deep copy (scoped per resource) of the incoming query so we don't modify it
+				var query = JSON.parse(JSON.stringify(incomingQuery));
+				model.baseQuery = incomingQuery;
+				
+				query.resourceUUID = JSON.parse(settings).picSureResourceId;
+				query.resourceCredentials = {};
+				query.query.expectedResultType="COUNT";
+			
+				//if this is the base resource, we should update the model and everything else
+  				if(resource.additionalPui == undefined) {
+  					model.set("query", query);
+  				} else {
+  					query.query.requiredFields.push(resource.additionalPui);
+  				}
+				
+  				// handle 'number of genomic samples'. do not overwrite an existing variant info (likely selected by user)
+  				if(resource.additionalVariantCategory &&  _.isEmpty(query.query.variantInfoFilters[0].categoryVariantInfoFilters)){
+  					query.query.variantInfoFilters[0].categoryVariantInfoFilters = JSON.parse(resource.additionalVariantCategory);
+  				}
+
+				$.ajax({
+				 	url: window.location.origin + "/picsure/query/sync",
+				 	type: 'POST',
+				 	headers: {"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("session")).token},
+				 	contentType: 'application/json',
+				 	data: JSON.stringify(query),
+  				 	success: function(response, textStatus, request){
+  				 		dataCallback(resource, response, request.getResponseHeader("resultId"), model, defaultOutput);
+  						},
+				 	error: function(response){
+						if (!transportErrors.handleAll(response, "Error while processing query")) {
+							response.responseText = "<h4>"
+								+ overrides.outputErrorMessage ? overrides.outputErrorMessage : "There is something wrong when processing your query, please try it later, if this repeats, please contact admin."
+								+ "</h4>";
+					 		errorCallback(resource, response.responseText, defaultOutput);
+						}
+					}
+				});
+			});
+		}
 	};
 });
