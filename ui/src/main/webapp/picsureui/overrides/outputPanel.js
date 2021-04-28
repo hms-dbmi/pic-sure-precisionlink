@@ -1,5 +1,5 @@
-define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings" ],
-function( outputTemplate, settings){
+define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors" ],
+function( outputTemplate, settings, transportErrors){
 	
 	var resources = {};
 	
@@ -96,20 +96,20 @@ function( outputTemplate, settings){
 				if(resource.additionalPui == undefined){
 					model.set("totalPatients", count);
 					/// set this value so RedCap (data export request) fields will be displayed
-					if(!this.isDefaultQuery(query)){
+					if(!this.isDefaultQuery(model.get("query"))){
 						model.set("picSureResultId", resultId);
 					} else {
 						model.set("picSureResultId", undefined);
 					}
 				}
 				
-				model.get("resources")[resource.id].queryRan = true;
-				model.get("resources")[resource.id].patientCount = count;
-				model.get("resources")[resource.id].spinning = false;
+				resources[resource.id].queryRan = true;
+				resources[resource.id].patientCount = count;
+				resources[resource.id].spinning = false;
 					
 				defaultOutput.render();
 				
-				if(_.every(model.get('resources'), (resource)=>{return resource.spinning==false})){
+				if(_.every(resources, (resource)=>{return resource.spinning==false})){
 					model.set("spinning", false);
 					model.set("queryRan", true);
 				} else {
@@ -122,11 +122,11 @@ function( outputTemplate, settings){
 					model.set("totalPatients", '-');
 				}
 				
-				model.get("resources")[resource.id].queryRan = true;
-				model.get("resources")[resource.id].patientCount = '-';
-				model.get("resources")[resource.id].spinning = false;
+				resources[resource.id].queryRan = true;
+				resources[resource.id].patientCount = '-';
+				resources[resource.id].spinning = false;
 				
-				if(_.every(model.get('resources'), (resource)=>{return resource.spinning==false})){
+				if(_.every(resources, (resource)=>{return resource.spinning==false})){
 					model.set("spinning", false);
 					model.set("queryRan", true);
 				} else {
@@ -154,17 +154,17 @@ function( outputTemplate, settings){
 			
 			//clear out the result count for resources/subqueries if we have no filters.  TODO: not sure why this is happening
 			//we can't check for 'required fields' here because the subqueries may use that to drive some selection
-  			if (incomingQuery.query.requiredFields.length == 0
-				&& _.keys(incomingQuery.query.numericFilters).length==0 
-				&& _.keys(incomingQuery.query.categoryFilters).length==0
-				&& _.keys(incomingQuery.query.variantInfoFilters).length==0
-				&& _.keys(incomingQuery.query.categoryFilters).length==0) {
-  				_.each(model.get('resources'), function(picsureInstance){
-	  					picsureInstance.id.patientCount = 0;
-	  				}.bind(this));
-	  			}
+//  			if (incomingQuery.query.requiredFields.length == 0
+//				&& _.keys(incomingQuery.query.numericFilters).length==0 
+//				&& _.keys(incomingQuery.query.categoryFilters).length==0
+//				&& _.keys(incomingQuery.query.variantInfoFilters).length==0
+//				&& _.keys(incomingQuery.query.categoryFilters).length==0) {
+//  				_.each(resources, function(picsureInstance){
+//	  					picsureInstance.id.patientCount = 0;
+//	  				}.bind(this));
+//	  			}
 			
-			this.render();
+  			defaultOutput.render();
 
 			//run a query for each resource 
 			_.each(resources, function(resource){
@@ -172,7 +172,7 @@ function( outputTemplate, settings){
 				var query = JSON.parse(JSON.stringify(incomingQuery));
 				model.baseQuery = incomingQuery;
 				
-				query.resourceUUID = JSON.parse(settings).picSureResourceId;
+				query.resourceUUID = settings.picSureResourceId;
 				query.resourceCredentials = {};
 				query.query.expectedResultType="COUNT";
 			
@@ -195,18 +195,18 @@ function( outputTemplate, settings){
 				 	contentType: 'application/json',
 				 	data: JSON.stringify(query),
   				 	success: function(response, textStatus, request){
-  				 		dataCallback(resource, response, request.getResponseHeader("resultId"), model, defaultOutput);
-  						},
+  				 		this.dataCallback(resource, response, request.getResponseHeader("resultId"), model, defaultOutput);
+  						}.bind(this),
 				 	error: function(response){
 						if (!transportErrors.handleAll(response, "Error while processing query")) {
 							response.responseText = "<h4>"
 								+ overrides.outputErrorMessage ? overrides.outputErrorMessage : "There is something wrong when processing your query, please try it later, if this repeats, please contact admin."
 								+ "</h4>";
-					 		errorCallback(resource, response.responseText, defaultOutput);
+					 		this.errorCallback(resource, response.responseText, defaultOutput);
 						}
-					}
+					}.bind(this)
 				});
-			});
+			}.bind(this));
 		}
 	};
 });
