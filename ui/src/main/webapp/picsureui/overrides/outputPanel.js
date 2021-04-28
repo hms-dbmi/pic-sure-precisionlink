@@ -152,7 +152,7 @@ function( outputTemplate, settings, transportErrors){
 		 */
 		runQuery: function(defaultOutput, incomingQuery, defaultDataCallback, defaultErrorCallback){
 			var model = defaultOutput.model;
-			model.set("resources") = this.resources;
+			model.set("resources", this.resources);
 			model.set("totalPatients",0);
 			model.spinAll();
 			
