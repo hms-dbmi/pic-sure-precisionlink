@@ -111,14 +111,15 @@ function( outputTemplate, settings, transportErrors){
 			resources[resource.id].patientCount = count;
 			resources[resource.id].spinning = false;
 				
-			defaultOutput.render();
-			
 			if(_.every(resources, (resource)=>{return resource.spinning==false})){
 				model.set("spinning", false);
 				model.set("queryRan", true);
 			} else {
 				console.log("still waiting");
 			}
+			
+			defaultOutput.render();
+			$(".copy-button").click(this.copyToken);
 		},
 		
 		errorCallback: function(resource, message, defaultOutput){
@@ -213,6 +214,19 @@ function( outputTemplate, settings, transportErrors){
 					}.bind(this)
 				});
 			}.bind(this));
-		}
+		},
+		
+		copyToken: function(){
+            var sel = getSelection();
+            var range = document.createRange();
+
+            var element = $(".picsure-result-id")[0]
+            // this if for supporting chrome, since chrome will look for value instead of textContent
+            element.value = element.textContent;
+            range.selectNode(element);
+            sel.removeAllRanges();
+            sel.addRange(range);
+            document.execCommand("copy");
+        }
 	};
 });
