@@ -53,7 +53,17 @@ function( outputTemplate, settings, transportErrors){
 		 * If you want to replace the entire Backbone.js Model that is used for
 		 * the output panel, define it here.
 		 */
-		modelOverride : undefined,
+		modelOverride :  BB.Model.extend({
+			spinAll: function(){
+				this.set('spinning', true);
+				this.set('queryRan', false);
+	  			
+				_.each(resources, function(resource){
+	  				resource.spinning=true;
+	  				resource.queryRan=false;
+	  			});
+			}
+		}),
 		
         isDefaultQuery: function(query){
 			return (query.query.requiredFields.length == 0 
@@ -119,7 +129,8 @@ function( outputTemplate, settings, transportErrors){
 			}
 			
 			defaultOutput.render();
-			$(".copy-button").click(this.copyToken);
+			/** can this go in view overrides? */
+			//$(".copy-button").click(this.copyToken);
 		},
 		
 		errorCallback: function(resource, message, defaultOutput){
@@ -156,20 +167,6 @@ function( outputTemplate, settings, transportErrors){
 			model.set("resources", this.resources);
 			model.set("totalPatients",0);
 			model.spinAll();
-			
-			
-			
-			//clear out the result count for resources/subqueries if we have no filters.  TODO: not sure why this is happening
-			//we can't check for 'required fields' here because the subqueries may use that to drive some selection
-//  			if (incomingQuery.query.requiredFields.length == 0
-//				&& _.keys(incomingQuery.query.numericFilters).length==0 
-//				&& _.keys(incomingQuery.query.categoryFilters).length==0
-//				&& _.keys(incomingQuery.query.variantInfoFilters).length==0
-//				&& _.keys(incomingQuery.query.categoryFilters).length==0) {
-//  				_.each(resources, function(picsureInstance){
-//	  					picsureInstance.id.patientCount = 0;
-//	  				}.bind(this));
-//	  			}
 			
   			defaultOutput.render();
 
@@ -214,6 +211,10 @@ function( outputTemplate, settings, transportErrors){
 					}.bind(this)
 				});
 			}.bind(this));
+		},
+		
+		events: {
+			"click .copy-button": "copyToken"
 		},
 		
 		copyToken: function(){

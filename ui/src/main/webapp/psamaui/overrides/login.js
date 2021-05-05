@@ -1,4 +1,4 @@
-define(["picSure/psamaSettings", "handlebars", 'text!overrides/not_authorized.hbs'], function(settings, HBS, notAuthorizedTemplate){
+define(["picSure/settings", "handlebars", 'text!overrides/not_authorized.hbs'], function(settings, HBS, notAuthorizedTemplate){
 	return {
 		/*
 		 * This allows you to build any authorization logic you wish.
@@ -10,7 +10,6 @@ define(["picSure/psamaSettings", "handlebars", 'text!overrides/not_authorized.hb
 		 */
 		authorization : undefined,
 
-        client_id : settings.client_id,
 		/*
 		 * This allows you to modify the DOM rendered on the login screen.
 		 * 
