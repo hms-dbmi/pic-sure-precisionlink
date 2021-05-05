@@ -1,5 +1,5 @@
-define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors" ],
-function( outputTemplate, settings, transportErrors){
+define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
+function( outputTemplate, settings, transportErrors, BB){
 	
 	var resources = {};
 	
