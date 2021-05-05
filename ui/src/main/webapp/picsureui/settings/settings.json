@@ -1,38 +1,38 @@
 {
   "resources":[
                 {
-                        "id" : "PrecisionLink",
-                        "name" : "PrecisionLink",
-                        "basePath" : "/picsure",
-                        "findPath" : "/PIC-SURE/search",
-			"subQueries" : [
-				{
-					"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\Bio Specimens:HF.BLD.000\\",
-					"name" : "Whole Blood",
-					"id" : "HumanFluid"
-				},
-				{
-					"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\Bio Specimens:HF.PLS.000\\",
-					"name" : "Plasma",
-					"id" : "HumanPlasma"
-				},
-				{
-					"additionalPui" : "\\Bio Specimens\\HumanTissue\\",
-					"name" : "Tissue",
-					"id" : "HumanTissue"
-				},
-				{
-					"additionalPui" : "\\Bio Specimens\\NucleicAcid\\",
-					"name" : "Extracted DNA",
-					"id" : "NucleicAcid"
-				},
-				{
-					"additionalPui" : "\\Next Generation Sequencing\\Exomes\\",
-					"name" : "DNA Sequencing",
-					"id" : "genomicCount",
-					"disabled_additionalVariantCategory": "{\"Variant_severity\": [\"LOW\"]}"
-				}
-				]
+                    "id" : "PrecisionLink",
+                    "name" : "PrecisionLink",
+                    "basePath" : "/picsure",
+                    "findPath" : "/PIC-SURE/search",
+					"subQueries" : [
+						{
+							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\Bio Specimens:HF.BLD.000 Quantity\\",
+							"name" : "Whole Blood",
+							"id" : "HumanFluid"
+						},
+						{
+							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\Bio Specimens:HF.PLS.000 Quantity\\",
+							"name" : "Plasma",
+							"id" : "HumanPlasma"
+						},
+						{
+							"additionalPui" : "\\Bio Specimens\\HumanTissue\\",
+							"name" : "Tissue",
+							"id" : "HumanTissue"
+						},
+						{
+							"additionalPui" : "\\Bio Specimens\\NucleicAcid\\",
+							"name" : "Extracted DNA",
+							"id" : "NucleicAcid"
+						},
+						{
+							"additionalPui" : "\\Next Generation Sequencing\\Exomes\\",
+							"name" : "DNA Sequencing",
+							"id" : "genomicCount",
+							"disabled_additionalVariantCategory": "{\"Variant_severity\": [\"LOW\"]}"
+						}
+					]
                 }
                 ],
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",
@@ -49,6 +49,7 @@
                    },
   "queryExportType":"EXPORT_DISABLED",
   "queryButtonLabel":"Prepare Data Export",
-  "analyticsId": "UA-70908320-4"
+  "analyticsId": "UA-70908320-4",
+  "pageTitle": "Precisionlink PIC-SURE"
 }
 
