@@ -1,5 +1,5 @@
-define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
-function( outputTemplate, settings, transportErrors, BB){
+define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors" ],
+function( outputTemplate, settings, transportErrors){
 	
 	var resources = {};
 	
@@ -129,8 +129,8 @@ function( outputTemplate, settings, transportErrors, BB){
 			}
 			
 			defaultOutput.render();
-			/** can this go in view overrides? */
-			//$(".copy-button").click(this.copyToken);
+			/** Can't extend view event hash because the view object can't find the functions in this override*/
+			$(".copy-button").click(this.copyToken);
 		},
 		
 		errorCallback: function(resource, message, defaultOutput){
@@ -211,10 +211,6 @@ function( outputTemplate, settings, transportErrors, BB){
 					}.bind(this)
 				});
 			}.bind(this));
-		},
-		
-		events: {
-			"click .copy-button": "copyToken"
 		},
 		
 		copyToken: function(){
