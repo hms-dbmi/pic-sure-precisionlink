@@ -7,12 +7,12 @@
                     "findPath" : "/PIC-SURE/search",
 					"subQueries" : [
 						{
-							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\Bio Specimens:HF.BLD.000 Quantity\\",
+							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\SPECIMENS:HF.BLD.000 Quantity\\",
 							"name" : "Whole Blood",
 							"id" : "HumanFluid"
 						},
 						{
-							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\Bio Specimens:HF.PLS.000 Quantity\\",
+							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\SPECIMENS:HF.PLS.000 Quantity\\",
 							"name" : "Plasma",
 							"id" : "HumanPlasma"
 						},
