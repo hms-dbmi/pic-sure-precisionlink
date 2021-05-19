@@ -43,13 +43,6 @@ function( outputTemplate, settings, transportErrors){
 		renderOverride : undefined,
 
 		/*
-		 *Override the behavior of the data selection panel when updating the query 
-		 */
-		selectOverride: function(){
-			//no op;  disable output panel
-		},
-
-		/*
 		 * If you want to replace the entire Backbone.js Model that is used for
 		 * the output panel, define it here.
 		 */
@@ -88,12 +81,6 @@ function( outputTemplate, settings, transportErrors){
 		 * registering callbacks for the responses and error handling.
 		 */
 		update: undefined,
-		/*
-		 * A function that takes two parameters, the first being a PUI, the
-		 * second being a picsureInstance such as is configured in settings.json
-		 * and returns a PUI that is valid for that picsureInstance.
-		 */
-		mapPuiForResource: undefined,
 		/*
 		 * If you want to show your customized error message, please override
 		 * this

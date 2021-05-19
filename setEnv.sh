@@ -27,15 +27,18 @@ sed -i "s/__AUTH0_CLIENT_ID__/$AUTH0_CLIENT_ID/g" ui/src/main/webapp/psamaui/set
 sed -i "s/__AUTH0_DOMAIN__/$AUTH0_TENANT/g" ui/src/main/webapp/psamaui/settings/settings.json
 
 if ! cmp -s "$DOCKER_CONFIG_DIR/httpd/psamaui_settings.json" "ui/src/main/webapp/psamaui/settings/settings.json"  ; then
+	mv $DOCKER_CONFIG_DIR/httpd/psamaui_settings.json $DOCKER_CONFIG_DIR/httpd/psamaui_settings.json.`date +%F_%T`
 	cp ui/src/main/webapp/psamaui/settings/settings.json $DOCKER_CONFIG_DIR/httpd/psamaui_settings.json
 fi
 
 if ! cmp -s "$DOCKER_CONFIG_DIR/httpd/picsureui_settings.json" "ui/src/main/webapp/psamaui/picsureui/settings.json"  ; then
+	mv $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json.`date +%F_%T`
 	cp ui/src/main/webapp/picsureui/settings/settings.json $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json
 fi
 
 
 if ! cmp -s "$DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf" "ui/httpd-vhosts.conf"  ; then
+	mv $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf.`date +%F_%T`
 	cp ui/httpd-vhosts.conf $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf
 fi
 
