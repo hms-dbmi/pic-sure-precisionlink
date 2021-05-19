@@ -5,5 +5,5 @@
   "customizeAuth0Login":true,
   "basePath":"/psama",
   "client_id":"__AUTH0_CLIENT_ID__",
-  "auth0domain":"__AUTH0_DOMAIN__",
+  "auth0domain":"__AUTH0_DOMAIN__"
 }
