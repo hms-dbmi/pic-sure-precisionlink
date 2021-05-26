@@ -1,5 +1,5 @@
-define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hbs", "picSure/ontology", "text!settings/settings.json"],
-    function(spinner, BB, HBS, searchResultTemplate, ontology, settings, dataTypeMapping){
+define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hbs", "picSure/search", "text!settings/settings.json", "treeview"],
+    function(spinner, BB, HBS, searchResultTemplate, search, settings){
         var searchResultModel = BB.Model.extend({
 
         });
@@ -45,7 +45,7 @@ define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hb
 	                console.log("PUI: " + searchValue);
 	                
 	    		    var deferredSearchResults = $.Deferred();
-	    		    ontology.autocomplete(searchValue, deferredSearchResults.resolve);
+	    		    search.execute(searchValue, deferredSearchResults.resolve, this.filterView.resourceUUID);
 	    		    $.when(deferredSearchResults).then(this.updateAnyRecordFilter);
 	
 	    		    var valueType = "ANYRECORDOF";

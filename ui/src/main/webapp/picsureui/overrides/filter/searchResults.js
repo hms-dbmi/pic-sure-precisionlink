@@ -21,8 +21,26 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 		}
 		var keys = _.keys(data);
 		var aliases = [];
+		var aliasObjects = {}
 		keys.forEach((key) => {
-			aliases.push(getAliasName(key));
+			var alias = getAliasName(key)
+			if(aliases.indexOf(alias) == -1){
+				aliases.push(alias);
+			}
+			var aliasObj = aliasObjects[alias];
+			if(aliasObj){
+				if(!aliasObj[key]){
+					aliasObj[key] = true;
+					aliasObj.tooltip = aliasObj.tooltip + "\n" + "-----------------------------------" + key;
+				}
+			} else {
+				aliasObj = {
+					alias: alias,
+					tooltip: key
+				}
+				aliasObj[key] = true;
+				aliasObjects[alias] = aliasObj;
+			}
 		});
 		
 		//track the category results
@@ -31,7 +49,7 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 		var compiledSubCategoryTemplate = this.searchSubCategories;
 		$('.search-tabs', filterView.$el).append(this.searchResultTabs(
 				{filterId: filterView.model.attributes.filterId,
-				 aliases: aliases}	));
+				 aliases: aliasObjects}	));
 		keys.forEach((key) => {
 			var subCategories = [];
 			var categorySearchResultViews = [];
