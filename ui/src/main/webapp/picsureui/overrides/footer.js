@@ -11,7 +11,6 @@ define(["jquery", "handlebars", "text!footer/footer.hbs", "text!biostats/Biostat
 			this.$el.html(this.template({ footerMessage : "" }));
 			
 			try{
-				console.log(biostats);
 				biostatsJson = JSON.parse(biostats);
 				summaries = biostatsJson.Summaries;
 				

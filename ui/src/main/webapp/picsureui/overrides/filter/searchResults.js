@@ -64,7 +64,12 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 				var categoryPath = undefined;
 				//loop over all of the categories; do not evaluate the final leaf node (we know it matches from the previous case)
 				//start from 2 here;  0 == empty; 1 = top level category (don't want to match)
-				for (i = 2; i < valuePath.length - 1; i++) {
+				
+				//
+				// Changing to include top level path for categories
+				//
+				
+				for (i = 1; i < valuePath.length - 1; i++) {
 					
 					if(valuePath[i].toLowerCase().includes(searchTerm.toLowerCase())){
 						categoryPath = valuePath.slice(0,i+1).join("\\");
