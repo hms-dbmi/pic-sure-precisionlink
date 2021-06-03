@@ -39,6 +39,8 @@ define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hb
 	            	var searchValue = this.targetCatgegory;
 	            	if(data){
 	            		 searchValue = data.pui.join("\\") + "\\" + data.text.trim();
+	            	} else if (!searchValue.endsWith("\\")){
+	            		searchValue = searchValue + "\\";
 	            	}
 	                 
 	
