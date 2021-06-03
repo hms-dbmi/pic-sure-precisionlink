@@ -1,5 +1,5 @@
-define(["jquery", "handlebars", "backbone", "text!settings/settings.json","filter/searchResults"], 
-function($, HBS, BB, settings, searchResults){
+define(["jquery", "handlebars", "backbone", "text!settings/settings.json","filter/searchResults", "text!filter/noResults.hbs"], 
+function($, HBS, BB, settings, searchResults, noResultsTemplate){
 	return {
 		/*
 		 * Sometimes you may want to do some validation or other logic prior
@@ -18,6 +18,9 @@ function($, HBS, BB, settings, searchResults){
 			this.model.set('searching', false);
 			if(result == undefined) {
 					alert("Result error");
+			} else if( result.suggestions.length == 0 ){
+				this.noResultsTemplate = HBS.compile(noResultsTemplate);
+				$('.search-tabs', this.$el).html(this.noResultsTemplate());
 			} else {
 				$('.search-tabs', this.$el).html('');
 				this.originalSearchTerm = this.model.get("searchTerm")
