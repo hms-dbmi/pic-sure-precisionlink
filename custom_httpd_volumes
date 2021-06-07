@@ -1,0 +1,1 @@
+-v /usr/local/docker-config/httpd/user_guide.pdf:/usr/local/apache2/htdocs/picsureui/static/user_guide.pdf
