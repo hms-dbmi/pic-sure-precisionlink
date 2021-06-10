@@ -101,7 +101,11 @@ function( outputTemplate, settings, transportErrors, BB){
 				if(resource.id==="PrecisionLink"){
 					model.set("totalPatients", this.result[resource.additionalPui]);
 					/// set this value so RedCap (data export request) fields will be displayed
-					model.set("picSureResultId", resultId);
+					if(!this.isDefaultQuery(model.get("query"))){
+						model.set("picSureResultId", resultId);
+					} else {
+						model.set("picSureResultId", undefined);
+					}
 				}
 				
 				model.get("resources")[resource.id].queryRan = true;
@@ -149,6 +153,7 @@ function( outputTemplate, settings, transportErrors, BB){
 
 			// make a safe deep copy of the incoming query so we don't modify it
 			var query = JSON.parse(JSON.stringify(incomingQuery));
+  			model.set("query", query);
 
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
