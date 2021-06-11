@@ -9,6 +9,7 @@ function( outputTemplate, settings, transportErrors, BB){
 		resources[resource.id] = {
 				id: resource.id,
 				name: resource.name,
+				// Every patient in PL has an age, this is used to get a top level count in the CROSS_COUNT query below
   				additionalPui: "\\Demographics\\Age\\",
 				patientCount: 0,
 				spinnerClasses: "spinner-center ",
@@ -95,10 +96,10 @@ function( outputTemplate, settings, transportErrors, BB){
 		dataCallback: function(result, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
 
-			_.each(resources, function(resource){
+			_.each(model.get("resources"), function(resource){
 
 				//if this is the main resource query, set total patients
-				if(resource.id==="PrecisionLink"){
+				if(!resource.isSubQuery){
 					model.set("totalPatients", this.result[resource.additionalPui]);
 					/// set this value so RedCap (data export request) fields will be displayed
 					if(!this.isDefaultQuery(model.get("query"))){
@@ -158,7 +159,7 @@ function( outputTemplate, settings, transportErrors, BB){
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
   			query.query.crossCountFields = [];
-			_.each(resources, function(resource){
+			_.each(model.get("resources"), function(resource){
 				query.query.crossCountFields.push(resource.additionalPui);
 			});
 
