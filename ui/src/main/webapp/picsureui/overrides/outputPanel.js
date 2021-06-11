@@ -9,9 +9,12 @@ function( outputTemplate, settings, transportErrors, BB){
 		resources[resource.id] = {
 				id: resource.id,
 				name: resource.name,
+				// Every patient in PL has an age, this is used to get a top level count in the CROSS_COUNT query below
+  				additionalPui: "\\Demographics\\Age\\",
 				patientCount: 0,
 				spinnerClasses: "spinner-center ",
-				spinning: false
+				spinning: false,
+				isSubQuery: false
 		};
 		
 		//then check to see if we have sub queries for this resource - add those as 'resource' items as well
@@ -22,7 +25,8 @@ function( outputTemplate, settings, transportErrors, BB){
   					additionalPui: resource.additionalPui,
   					patientCount: 0,
   					spinnerClasses: "spinner-small spinner-small-center ",
-  					spinning: false
+  					spinning: false,
+					isSubQuery: true
   			};
 		});
 	});
@@ -89,32 +93,34 @@ function( outputTemplate, settings, transportErrors, BB){
 		
 		outputTemplate: outputTemplate,
 		
-		dataCallback: function(resource, result, resultId, model, defaultOutput){
-			var count = parseInt(result);
+		dataCallback: function(result, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
-			
-			//if this is the main resource query, set total patients
-			if(resource.additionalPui == undefined){
-				model.set("totalPatients", count);
-				/// set this value so RedCap (data export request) fields will be displayed
-				if(!this.isDefaultQuery(model.get("query"))){
-					model.set("picSureResultId", resultId);
-				} else {
-					model.set("picSureResultId", undefined);
+
+			_.each(model.get("resources"), function(resource){
+
+				//if this is the main resource query, set total patients
+				if(!resource.isSubQuery){
+					model.set("totalPatients", this.result[resource.additionalPui]);
+					/// set this value so RedCap (data export request) fields will be displayed
+					if(!this.isDefaultQuery(model.get("query"))){
+						model.set("picSureResultId", resultId);
+					} else {
+						model.set("picSureResultId", undefined);
+					}
 				}
-			}
-			
-			resources[resource.id].queryRan = true;
-			resources[resource.id].patientCount = count;
-			resources[resource.id].spinning = false;
 				
-			if(_.every(resources, (resource)=>{return resource.spinning==false})){
-				model.set("spinning", false);
-				model.set("queryRan", true);
-			} else {
-				console.log("still waiting");
-			}
-			
+				model.get("resources")[resource.id].queryRan = true;
+				model.get("resources")[resource.id].patientCount = this.result[resource.additionalPui];
+				model.get("resources")[resource.id].spinning = false;
+					
+				if(_.every(model.get("resources"), (resource)=>{return resource.spinning==false})){
+					model.set("spinning", false);
+					model.set("queryRan", true);
+				} else {
+					console.log("still waiting");
+				}
+			}.bind(_.extend(this, {result:result})));
+
 			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
@@ -122,28 +128,17 @@ function( outputTemplate, settings, transportErrors, BB){
 		
 		errorCallback: function(resource, message, defaultOutput){
 			var model = defaultOutput.model;
-			if(resource.additionalPui == undefined){
-				model.set("totalPatients", '-');
-			}
-			
-			resources[resource.id].queryRan = true;
-			resources[resource.id].patientCount = '-';
-			resources[resource.id].spinning = false;
-			
-			if(_.every(resources, (resource)=>{return resource.spinning==false})){
-				model.set("spinning", false);
-				model.set("queryRan", true);
-			} else {
-				console.log("still waiting");
-			}
+			_.each(model.get("resources"),function(resource){
+				resource.queryRan = true;
+				resource.patientCount = '-';
+				resource.spinning = false;
+			});
+			model.set("totalPatients", '-');
+			model.set("spinning", false);
 			
 			defaultOutput.render();
 			
-			if(resource.additionalPui == undefined){
-				$("#patient-count").html(message);
-			} else {
-				console.log("error in query");
-			}
+			$("#patient-count").html(message);
 		},
 		
 		/*
@@ -157,47 +152,36 @@ function( outputTemplate, settings, transportErrors, BB){
 			
   			defaultOutput.render();
 
-			//run a query for each resource 
-			_.each(resources, function(resource){
-				// make a safe deep copy (scoped per resource) of the incoming query so we don't modify it
-				var query = JSON.parse(JSON.stringify(incomingQuery));
-				model.baseQuery = incomingQuery;
-				
-				query.resourceUUID = settings.picSureResourceId;
-				query.resourceCredentials = {};
-				query.query.expectedResultType="COUNT";
-			
-				//if this is the base resource, we should update the model and everything else
-  				if(resource.additionalPui == undefined) {
-  					model.set("query", query);
-  				} else {
-  					query.query.requiredFields.push(resource.additionalPui);
-  				}
-				
-  				// handle 'number of genomic samples'. do not overwrite an existing variant info (likely selected by user)
-  				if(resource.additionalVariantCategory &&  _.isEmpty(query.query.variantInfoFilters[0].categoryVariantInfoFilters)){
-  					query.query.variantInfoFilters[0].categoryVariantInfoFilters = JSON.parse(resource.additionalVariantCategory);
-  				}
+			// make a safe deep copy of the incoming query so we don't modify it
+			var query = JSON.parse(JSON.stringify(incomingQuery));
+  			model.set("query", query);
 
-				$.ajax({
-				 	url: window.location.origin + "/picsure/query/sync",
-				 	type: 'POST',
-				 	headers: {"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("session")).token},
-				 	contentType: 'application/json',
-				 	data: JSON.stringify(query),
-  				 	success: function(response, textStatus, request){
-  				 		this.dataCallback(resource, response, request.getResponseHeader("resultId"), model, defaultOutput);
-  						}.bind(this),
-				 	error: function(response){
-						if (!transportErrors.handleAll(response, "Error while processing query")) {
-							response.responseText = "<h4>"
-								+ this.outputErrorMessage;
-								+ "</h4>";
-					 		this.errorCallback(resource, response.responseText, defaultOutput);
-						}
-					}.bind(this)
-				});
-			}.bind(this));
+			// configure for CROSS_COUNT query type
+  			query.query.expectedResultType = 'CROSS_COUNT';
+  			query.query.crossCountFields = [];
+			_.each(model.get("resources"), function(resource){
+				query.query.crossCountFields.push(resource.additionalPui);
+			});
+
+			$.ajax({
+			 	url: window.location.origin + "/picsure/query/sync",
+			 	type: 'POST',
+			 	headers: {"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("session")).token},
+			 	contentType: 'application/json',
+			 	data: JSON.stringify(query),
+				success: function(response, textStatus, request){
+				 		this.dataCallback(response, request.getResponseHeader("resultId"), model, defaultOutput);
+				}.bind(this),
+			 	error: function(response){
+					if (!transportErrors.handleAll(response, "Error while processing query")) {
+						response.responseText = "<h4>"
+							+ this.outputErrorMessage;
+							+ "</h4>";
+				 		this.errorCallback(resources["PrecisionLink"], response.responseText, defaultOutput);
+					}
+				}.bind(this)
+			});
+
 		},
 		
 		copyToken: function(){
