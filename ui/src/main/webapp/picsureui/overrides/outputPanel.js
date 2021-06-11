@@ -113,7 +113,7 @@ function( outputTemplate, settings, transportErrors, BB){
 				model.get("resources")[resource.id].patientCount = this.result[resource.additionalPui];
 				model.get("resources")[resource.id].spinning = false;
 					
-				if(_.every(resources, (resource)=>{return resource.spinning==false})){
+				if(_.every(model.get("resources"), (resource)=>{return resource.spinning==false})){
 					model.set("spinning", false);
 					model.set("queryRan", true);
 				} else {
