@@ -72,51 +72,67 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 		allPatientsConcept: "\\Demographics\\Age\\",
 		biobankPatientsConcept: "\\BIOBANK_CONSENTED\\",
 		
+		formatNumber: function(value){
+			value = parseInt(value);
+			
+			if ( value >= 0){
+				return value.toLocaleStriong();
+			} else {
+				return "-";
+			}
+		},
+		
 		dataCallback: function(crossCounts, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
-
 			genomicPatientCount = 0;
 			
-			$("#patient-count").html(parseInt(crossCounts[this.allPatientsConcept]).toLocaleString());
+			$("#patient-count").html(formatNumber(crossCounts[this.allPatientsConcept]));
 			/// set this value so RedCap (data export request) fields will be displayed
 			if(!this.isDefaultQuery(model.get("query"))){
 				model.set("picSureResultId", resultId);
 				$(".picsure-result-id").html(resultId);
+				$(".query-result-container").show(150);
 			} else {
 				model.set("picSureResultId", undefined);
 				$(".picsure-result-id").html("");
+				$(".query-result-container").hide(150);
 			}
 			
 			_.each(this.genomicFields, function(genomicMetadata){
 				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
-				genomicPatientCount += genomicMetadata.count;
-				$("#genomic-results-" + genomicMetadata.id + "-count").html(genomicMetadata.count.toLocaleString()); 
+				
+				//if crosscount returns error value, don't add it up!
+				if(genomicMetadata.count > 0){
+					genomicPatientCount += genomicMetadata.count;
+				}
+				
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(formatNumber(genomicMetadata.count)); 
 			});
 			model.set("totalGenomicData", genomicPatientCount);
 			$("#genomic-count").html(genomicPatientCount.toLocaleString());
 			
 			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
-				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count.toLocaleString()); 
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(formatNumber(biosampleMetadata.count)); 
 			});
 			
 			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
-			$("#biosamples-count").html(parseInt(crossCounts[this.biobankPatientsConcept]).toLocaleString());
-
+			$("#biosamples-count").html(formatNumber(crossCounts[this.biobankPatientsConcept]));
+			
+			model.set("spinning", false)
+			$("#spinner-total").hide();
+			
+			
 //			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
 		},
 		
-		errorCallback: function(resource, message, defaultOutput){
+		errorCallback: function( message, defaultOutput){
 			var model = defaultOutput.model;
-			_.each(model.get("resources"),function(resource){
-				resource.queryRan = true;
-				resource.patientCount = '-';
-				resource.spinning = false;
-			});
+			model.set("spinning", false)
+			$("#spinner-total").hide();
 			model.set("totalPatients", '-');
-			model.set("spinning", false);
 			
 			defaultOutput.render();
 			
@@ -160,7 +176,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 						response.responseText = "<h4>"
 							+ this.outputErrorMessage;
 							+ "</h4>";
-				 		this.errorCallback(resources["PrecisionLink"], response.responseText, defaultOutput);
+				 		this.errorCallback(response.responseText, defaultOutput);
 					}
 				}.bind(this)
 			});

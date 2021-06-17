@@ -207,6 +207,7 @@ body {
 
 .query-result-container{
 	width: 90%;
+	display: none;
 }
 
 .spinner-small {
