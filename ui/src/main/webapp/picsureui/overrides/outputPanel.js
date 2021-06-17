@@ -76,7 +76,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 			value = parseInt(value);
 			
 			if ( value >= 0){
-				return value.toLocaleStriong();
+				return value.toLocaleString();
 			} else {
 				return "-";
 			}
@@ -107,14 +107,14 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 				}
 				
 				$("#genomic-results-" + genomicMetadata.id + "-count").html(this.formatNumber(genomicMetadata.count)); 
-			});
+			}.bind(this));
 			model.set("totalGenomicData", genomicPatientCount);
 			$("#genomic-count").html(this.formatNumber(genomicPatientCount));
 			
 			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
 				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count)); 
-			});
+			}.bind(this));
 			
 			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
 			$("#biosamples-count").html(this.formatNumber(crossCounts[this.biobankPatientsConcept]));

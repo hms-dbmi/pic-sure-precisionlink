@@ -1,14 +1,14 @@
 <div id="patient-count-box">
 	<div id="enrolled-patients" title="Total number of patients">
 		<span class="center large" id="spinner-total">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
-		<span id="patient-count" class="blue center large">{{#if queryRan}}{{#if countDisplayOverride}}{{> (countDisplayOverride) totalPatients}}{{else}}{{outputPanel_obfuscate totalPatients}}{{/if}}{{else}}-{{/if}}</span><br>
+		<span id="patient-count" class="center large">{{#if queryRan}}{{#if countDisplayOverride}}{{> (countDisplayOverride) totalPatients}}{{else}}{{outputPanel_obfuscate totalPatients}}{{/if}}{{else}}-{{/if}}</span><br>
 		<span class="center medium">Patients</span>
 	</div>
 	
 	
 	<br><br>
 		<div id="genomic-div" title="Number of Biobank participants with genomic data matching your query.">
-		<span id="genomic-count" class="blue center large">{{#if queryRan}}{{totalGenomicData}}{{else}}-{{/if}}</span>
+		<span id="genomic-count" class="center large">{{#if queryRan}}{{totalGenomicData}}{{else}}-{{/if}}</span>
 		<span class="center medium">Participants with Genomic Data</span>
 		<span class="icon expand-icon glyphicon glyphicon-chevron-right institution-arrow" id="institution-genomic-arrow"></span>
 	</div>
@@ -16,7 +16,7 @@
 	<div class="container institution-results" id="genomic-instances" >		
         <div class="result-list">
 		{{#each genomicFields}}
-				<div class="col-md-6 left"><span>{{label}}</span></div>
+				<div class="col-md-6 left"><span>{{label}}:</span></div>
 				<div class="col-md-3 right"><span id="genomic-results-{{id}}-count">-</span>
 				</div>
 				<div class="col-md-3"></div><br>
@@ -40,7 +40,7 @@
 	
 	<br><br>
 		<div id="biosamples-div" title="Number of Biobank participants matching your query.">
-		<span id="biosamples-count" class="blue center large">{{#if queryRan}}{{totalBiospecimens}}{{else}}-{{/if}}</span>
+		<span id="biosamples-count" class="center large">{{#if queryRan}}{{totalBiospecimens}}{{else}}-{{/if}}</span>
 		<span class="center medium">Biobank Participants</span>
 		<span class="icon expand-icon glyphicon glyphicon-chevron-right institution-arrow" id="institution-biosamples-arrow"></span>
 	</div>
@@ -48,7 +48,7 @@
 	<div class="container institution-results" id="biosamples-instances" >		
         <div class="result-list">
 		{{#each biosampleFields}}
-				<div class="col-md-6 left"><span>{{label}}</span></div>
+				<div class="col-md-6 left"><span>{{label}}:</span></div>
 				<div class="col-md-3 right"><span id="biosamples-results-{{id}}-count">-</span>
 				</div>
 				<div class="col-md-3"></div><br>
@@ -72,17 +72,16 @@
 	
 	<br/>
 	<div class="container query-result-container">
-		<div class="row">
-			<span class="picsure-result-id-label col-md-12"> BiobankPortal Query ID:</span><br>
-			<span class="picsure-result-id col-md-12">{{picSureResultId}}</span><br>
-			<span class="col-md-12 copy-button-span"><button class="fa fa-files-o copy-button" title="Copy Query ID"> Copy Query ID</button></span>
-		</div>
 		<div class="row"><br></div>
 		<div class="row center">
 			<form action="https://redcap-qi.tch.harvard.edu/redcap_edc/surveys/" method="get" target="_blank">
 				<input type="hidden" name="s" value="JAXPDW99XD" />
-	 		        <button class="callToAction bch-tooltip fa fa-lock" type="submit" title="Need to be in BCH network or connected via VPN"> REQUEST</button> specimens and data
+	 		        <button class="callToAction bch-tooltip fa fa-lock" type="submit" title="Need to be in BCH network or connected via VPN"> REQUEST specimens and data</button>
 	      		</form>
+		</div>
+		<div class="row">
+			<span class="picsure-result-id col-md-12">{{picSureResultId}}</span><br>
+			<span class="col-md-12 copy-button-span"><button class="fa fa-files-o copy-button" title="Copy Query ID"> Copy Query ID</button></span>
 		</div>
 	</div>
 </div>
