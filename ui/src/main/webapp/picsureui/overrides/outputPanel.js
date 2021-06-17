@@ -1,5 +1,5 @@
 define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
-function( outputTemplate, settings, transportErrors, BB){
+function( outputTemplate, picsureSettings, transportErrors, BB){
 	
 	var resources = {};
 	
@@ -76,7 +76,7 @@ function( outputTemplate, settings, transportErrors, BB){
 
 			genomicPatientCount = 0;
 			
-			$("#patient-count").html(parseInt(crossCounts[allPatientsConcept]).toLocaleString());
+			$("#patient-count").html(parseInt(crossCounts[this.allPatientsConcept]).toLocaleString());
 			/// set this value so RedCap (data export request) fields will be displayed
 			if(!this.isDefaultQuery(model.get("query"))){
 				model.set("picSureResultId", resultId);
@@ -99,8 +99,8 @@ function( outputTemplate, settings, transportErrors, BB){
 				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count.toLocaleString()); 
 			});
 			
-			model.set("totalBiosamples", crossCounts[biobankPatientsConcept]);
-			$("#biosamples-count").html(parseInt(crossCounts[biobankPatientsConcept]).toLocaleString());
+			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
+			$("#biosamples-count").html(parseInt(crossCounts[this.biobankPatientsConcept]).toLocaleString());
 
 //			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
@@ -139,11 +139,9 @@ function( outputTemplate, settings, transportErrors, BB){
 
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
-  			query.query.crossCountFields = [];
-  			query.query.crossCountFields.push(allPatientsConcept);
-  			query.query.crossCountFields.push(biobankPatientsConcept);
-			query.query.crossCountFields.push(_.pluck(genomicFields, "conceptPath"));
-			query.query.crossCountFields.push(_.pluck(biosampleFields, "conceptPath"));
+  			query.query.crossCountFields = [this.allPatientsConcept, this.biobankPatientsConcept].concat(
+  					_.pluck(genomicFields, "conceptPath"), _.pluck(biosampleFields, "conceptPath")
+  			);
 			
 			$.ajax({
 			 	url: window.location.origin + "/picsure/query/sync",
