@@ -76,7 +76,7 @@ function( outputTemplate, settings, transportErrors, BB){
 
 			genomicPatientCount = 0;
 			
-			$("#patient-count").html(crossCounts[allPatientsConcept]);
+			$("#patient-count").html(parseInt(crossCounts[allPatientsConcept]).toLocaleString());
 			/// set this value so RedCap (data export request) fields will be displayed
 			if(!this.isDefaultQuery(model.get("query"))){
 				model.set("picSureResultId", resultId);
@@ -89,18 +89,18 @@ function( outputTemplate, settings, transportErrors, BB){
 			_.each(genomicFields, function(genomicMetadata){
 				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
 				genomicPatientCount += genomicMetadata.count;
-				$("#genomic-results-" + genomicMetadata.id + "-count").html(genomicMetadata.count); 
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(genomicMetadata.count.toLocaleString()); 
 			});
 			model.set("totalGenomicData", genomicPatientCount);
-			$("#genomic-count").html(genomicPatientCount);
+			$("#genomic-count").html(genomicPatientCount.toLocaleString());
 			
 			_.each(biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
-				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count); 
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count.toLocaleString()); 
 			});
 			
 			model.set("totalBiosamples", crossCounts[biobankPatientsConcept]);
-			$("#biosamples-count").html(crossCounts[biobankPatientsConcept]);
+			$("#biosamples-count").html(parseInt(crossCounts[biobankPatientsConcept]).toLocaleString());
 
 //			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
