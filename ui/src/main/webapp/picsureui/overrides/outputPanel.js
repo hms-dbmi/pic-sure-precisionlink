@@ -86,7 +86,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 			var model = defaultOutput.model;
 			genomicPatientCount = 0;
 			
-			$("#patient-count").html(formatNumber(crossCounts[this.allPatientsConcept]));
+			$("#patient-count").html(this.formatNumber(crossCounts[this.allPatientsConcept]));
 			/// set this value so RedCap (data export request) fields will be displayed
 			if(!this.isDefaultQuery(model.get("query"))){
 				model.set("picSureResultId", resultId);
@@ -106,18 +106,18 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 					genomicPatientCount += genomicMetadata.count;
 				}
 				
-				$("#genomic-results-" + genomicMetadata.id + "-count").html(formatNumber(genomicMetadata.count)); 
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(this.formatNumber(genomicMetadata.count)); 
 			});
 			model.set("totalGenomicData", genomicPatientCount);
-			$("#genomic-count").html(genomicPatientCount.toLocaleString());
+			$("#genomic-count").html(this.formatNumber(genomicPatientCount));
 			
 			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
-				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(formatNumber(biosampleMetadata.count)); 
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count)); 
 			});
 			
 			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
-			$("#biosamples-count").html(formatNumber(crossCounts[this.biobankPatientsConcept]));
+			$("#biosamples-count").html(this.formatNumber(crossCounts[this.biobankPatientsConcept]));
 			
 			model.set("spinning", false)
 			$("#spinner-total").hide();
