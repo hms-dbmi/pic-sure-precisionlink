@@ -3,12 +3,13 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 	
 	var resources = {};
 	
-	var genomicFields = picsureSettings.genomicFields;
-	var biosampleFields = picsureSettings.biosampleFields;
 	
     return {
     	
     	resources: resources,
+    	biosampleFields:  picsureSettings.biosampleFields,
+    	genomicFields: picsureSettings.genomicFields,
+    	
 		/*
 		 * This should be a function that returns the name of a Handlebars
 		 * partial that will be used to render the count. The Handlebars partial
@@ -68,7 +69,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 		
 		outputTemplate: outputTemplate,
 		
-		allPatientsConcept: "\\Demographics\\Age",
+		allPatientsConcept: "\\Demographics\\Age\\",
 		biobankPatientsConcept: "\\BIOBANK_CONSENTED\\",
 		
 		dataCallback: function(crossCounts, resultId, model, defaultOutput){
@@ -86,7 +87,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 				$(".picsure-result-id").html("");
 			}
 			
-			_.each(genomicFields, function(genomicMetadata){
+			_.each(this.genomicFields, function(genomicMetadata){
 				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
 				genomicPatientCount += genomicMetadata.count;
 				$("#genomic-results-" + genomicMetadata.id + "-count").html(genomicMetadata.count.toLocaleString()); 
@@ -94,7 +95,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 			model.set("totalGenomicData", genomicPatientCount);
 			$("#genomic-count").html(genomicPatientCount.toLocaleString());
 			
-			_.each(biosampleFields, function(biosampleMetadata){
+			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
 				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count.toLocaleString()); 
 			});
@@ -129,6 +130,8 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 			var model = defaultOutput.model;
 			model.set("resources", this.resources);
 			model.set("totalPatients",0);
+			model.set("biosampleFields", this.biosampleFields);
+			model.set("genomicFields", this.genomicFields);
 			model.spinAll();
 			
   			defaultOutput.render();
@@ -140,7 +143,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
   			query.query.crossCountFields = [this.allPatientsConcept, this.biobankPatientsConcept].concat(
-  					_.pluck(genomicFields, "conceptPath"), _.pluck(biosampleFields, "conceptPath")
+  					_.pluck(this.genomicFields, "conceptPath"), _.pluck(this.biosampleFields, "conceptPath")
   			);
 			
 			$.ajax({
