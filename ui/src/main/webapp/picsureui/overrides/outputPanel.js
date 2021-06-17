@@ -3,34 +3,9 @@ function( outputTemplate, settings, transportErrors, BB){
 	
 	var resources = {};
 	
-	_.each(settings.resources, (resource) => {
-		
-		//base resource first; this will be the 'all patients' or main query
-		resources[resource.id] = {
-				id: resource.id,
-				name: resource.name,
-				// Every patient in PL has an age, this is used to get a top level count in the CROSS_COUNT query below
-  				additionalPui: "\\Demographics\\Age\\",
-				patientCount: 0,
-				spinnerClasses: "spinner-center ",
-				spinning: false,
-				isSubQuery: false
-		};
-		
-		//then check to see if we have sub queries for this resource - add those as 'resource' items as well
-		_.each(resource.subQueries, (resource) => {
-  			resources[resource.id] = {
-  					id: resource.id,
-  					name: resource.name,
-  					additionalPui: resource.additionalPui,
-  					patientCount: 0,
-  					spinnerClasses: "spinner-small spinner-small-center ",
-  					spinning: false,
-					isSubQuery: true
-  			};
-		});
-	});
-    
+	var genomicFields = picsureSettings.genomicFields;
+	var biosampleFields = picsureSettings.biosampleFields;
+	
     return {
     	
     	resources: resources,
@@ -93,35 +68,41 @@ function( outputTemplate, settings, transportErrors, BB){
 		
 		outputTemplate: outputTemplate,
 		
-		dataCallback: function(result, resultId, model, defaultOutput){
+		allPatientsConcept: "\\Demographics\\Age",
+		biobankPatientsConcept: "\\BIOBANK_CONSENTED\\",
+		
+		dataCallback: function(crossCounts, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
 
-			_.each(model.get("resources"), function(resource){
+			genomicPatientCount = 0;
+			
+			$("#patient-count").html(crossCounts[allPatientsConcept]);
+			/// set this value so RedCap (data export request) fields will be displayed
+			if(!this.isDefaultQuery(model.get("query"))){
+				model.set("picSureResultId", resultId);
+				$(".picsure-result-id").html(resultId);
+			} else {
+				model.set("picSureResultId", undefined);
+				$(".picsure-result-id").html("");
+			}
+			
+			_.each(genomicFields, function(genomicMetadata){
+				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
+				genomicPatientCount += genomicMetadata.count;
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(genomicMetadata.count); 
+			});
+			model.set("totalGenomicData", genomicPatientCount);
+			$("#genomic-count").html(genomicPatientCount);
+			
+			_.each(biosampleFields, function(biosampleMetadata){
+				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(biosampleMetadata.count); 
+			});
+			
+			model.set("totalBiosamples", crossCounts[biobankPatientsConcept]);
+			$("#biosamples-count").html(crossCounts[biobankPatientsConcept]);
 
-				//if this is the main resource query, set total patients
-				if(!resource.isSubQuery){
-					model.set("totalPatients", this.result[resource.additionalPui]);
-					/// set this value so RedCap (data export request) fields will be displayed
-					if(!this.isDefaultQuery(model.get("query"))){
-						model.set("picSureResultId", resultId);
-					} else {
-						model.set("picSureResultId", undefined);
-					}
-				}
-				
-				model.get("resources")[resource.id].queryRan = true;
-				model.get("resources")[resource.id].patientCount = this.result[resource.additionalPui];
-				model.get("resources")[resource.id].spinning = false;
-					
-				if(_.every(model.get("resources"), (resource)=>{return resource.spinning==false})){
-					model.set("spinning", false);
-					model.set("queryRan", true);
-				} else {
-					console.log("still waiting");
-				}
-			}.bind(_.extend(this, {result:result})));
-
-			defaultOutput.render();
+//			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
 		},
@@ -159,10 +140,11 @@ function( outputTemplate, settings, transportErrors, BB){
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
   			query.query.crossCountFields = [];
-			_.each(model.get("resources"), function(resource){
-				query.query.crossCountFields.push(resource.additionalPui);
-			});
-
+  			query.query.crossCountFields.push(allPatientsConcept);
+  			query.query.crossCountFields.push(biobankPatientsConcept);
+			query.query.crossCountFields.push(_.pluck(genomicFields, "conceptPath"));
+			query.query.crossCountFields.push(_.pluck(biosampleFields, "conceptPath"));
+			
 			$.ajax({
 			 	url: window.location.origin + "/picsure/query/sync",
 			 	type: 'POST',

@@ -1,27 +1,77 @@
 <div id="patient-count-box">
-	<div id="enrolled-patients" title="Total number of patients enrolled in the PrecisionLink Biobank matching your query.">
+	<div id="enrolled-patients" title="Total number of patients">
 		<span class="center large" id="spinner-total">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
 		<span id="patient-count" class="blue center large">{{#if queryRan}}{{#if countDisplayOverride}}{{> (countDisplayOverride) totalPatients}}{{else}}{{outputPanel_obfuscate totalPatients}}{{/if}}{{else}}-{{/if}}</span><br>
 		<span class="center medium">Patients Enrolled</span>
 	</div>
+	
+	
 	<br><br>
-	<div class="container" id="pic-sure-instances" title="The number of patients enrolled in the PrecisionLink Biobank matching your query with each of these sample types in the biobank.">		
-        <div class="row">
-            <span class="center">Samples available in Biobank:</span>
-        </div><br>
-        <div class="row">
-		{{#each resources}}
-				{{#if isSubQuery}}
-				<div class="col-md-6 right"><span>{{name}} : </span></div>
-				<div class="col-md-3 right">	<span id="patient-count-{{id}}">{{#if queryRan}}{{#if ../countDisplayOverride}}{{> (../countDisplayOverride) patientCount}}{{else}}{{outputPanel_obfuscate  patientCount}}{{/if}}{{else}}-{{/if}}</span>
-					<span id="spinner-{{id}}">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
+		<div id="genomic-div" title="Number of Biobank participants with genomic data matching your query.">
+		<span class="center large" id="genomic-spinner-total">{{#if spinning}}{{> spinner spinnerClasses}}{{/if}}</span>
+		<span id="genomic-count" class="blue center large">{{#if queryRan}}{{totalGenomicData}}{{else}}-{{/if}}</span>
+		<span class="center medium">Participants with Genomic Data</span>
+		<span class="icon expand-icon glyphicon glyphicon-chevron-right institution-arrow" id="institution-genomic-arrow"></span>
+	</div>
+	<br><br>
+	<div class="container institution-results" id="genomic-instances" >		
+        <div class="result-list">
+		{{#each genomicFields}}
+				<div class="col-md-6 left"><span>{{label}}</span></div>
+				<div class="col-md-3 right"><span id="genomic-results-{{id}}-count">-</span>
 				</div>
-				<div class="col-md-3"></div>
-				<div class="w-100"></div>
-				{{/if}}
+				<div class="col-md-3"></div><br>
 		{{/each}}
 		</div>
 	</div>
+	<script>
+	$("#institution-genomic-arrow").click(function(){
+		if($("#institution-genomic-arrow").hasClass("glyphicon-chevron-right")){
+			$("#institution-genomic-arrow").removeClass("glyphicon-chevron-right");
+			$("#institution-genomic-arrow").addClass("glyphicon-chevron-down");
+			$("#genomic-instances").show("150");
+		} else {
+			$("#institution-genomic-arrow").addClass("glyphicon-chevron-right");
+			$("#institution-genomic-arrow").removeClass("glyphicon-chevron-down");
+			$("#genomic-instances").hide("150");
+		}
+	});
+	</script>
+	
+	
+	<br><br>
+		<div id="biosamples-div" title="Number of Biobank participants matching your query.">
+		<span class="center large" id="biosamples-spinner-total">{{#if bioSpinning}}{{> spinner spinnerClasses}}{{/if}}</span>
+		<span id="biosamples-count" class="blue center large">{{#if queryRan}}{{totalBiospecimens}}{{else}}-{{/if}}</span>
+		<span class="center medium">Biobank Participants</span>
+		<span class="icon expand-icon glyphicon glyphicon-chevron-right institution-arrow" id="institution-biosamples-arrow"></span>
+	</div>
+	<br><br>
+	<div class="container institution-results" id="biosamples-instances" >		
+        <div class="result-list">
+		{{#each biosampleFields}}
+				<div class="col-md-6 left"><span>{{label}}</span></div>
+				<div class="col-md-3 right"><span id="biosamples-results-{{id}}-count">-</span>
+				</div>
+				<div class="col-md-3"></div><br>
+		{{/each}}
+		</div>
+	</div>
+	<script>
+	$("#institution-biosamples-arrow").click(function(){
+		if($("#institution-biosamples-arrow").hasClass("glyphicon-chevron-right")){
+			$("#institution-biosamples-arrow").removeClass("glyphicon-chevron-right");
+			$("#institution-biosamples-arrow").addClass("glyphicon-chevron-down");
+			$("#biosamples-instances").show("150");
+		} else {
+			$("#institution-biosamples-arrow").addClass("glyphicon-chevron-right");
+			$("#institution-biosamples-arrow").removeClass("glyphicon-chevron-down");
+			$("#biosamples-instances").hide("150");
+		}
+	});
+	</script>
+	
+	
 	<br/>
 	<div class="container query-result-container">
 	{{#if picSureResultId}}
