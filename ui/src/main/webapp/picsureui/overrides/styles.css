@@ -92,8 +92,15 @@ body {
     flex: 1;
 }
 
+/* not so large */
+.large {
+	font-size: 4em;
+}
+
 #patient-count-box {
     background-color: rgb(223, 238, 255);
+    color: #003087;
+    font-weight: bold;
     border-radius: 4px;
 }
 
@@ -203,10 +210,12 @@ body {
 
 .picsure-result-id, .picsure-result-id-label  {
     text-align: center;
+    display: none;
 }
 
 .query-result-container{
 	width: 90%;
+	display: none;
 }
 
 .spinner-small {
@@ -232,3 +241,88 @@ body {
 	float:right;
 	margin-right: 100px;
 }
+
+
+/* 2m patient updates */
+#main-content {
+	width: 90%;
+}
+
+/* result boxes are initially hidden */
+.institution-results {
+	width: 90%;
+	background: #fff;
+	border-radius: 5px;
+	margin-top: 10px;
+	display: none;
+}
+
+.container button {
+	background: #fff;
+	border-radius: 5px;
+}
+
+.result-list {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#patient-count-box {
+	padding: 5px 0px 10px 0px;
+}
+
+.institution-arrow {
+	display: block;
+    margin-top: -60px;
+    margin-right: 5px;
+    text-align: right;
+    font-size: 2em;
+}
+
+.glyphicon {
+	color: gray;
+}
+
+/* restore correct coloring for user profile buttons */
+#user-token-copy-button {
+	background-color: #5cb85c;
+	border-color: #4cae4c;
+}
+
+#user-token-copy-button:hover {
+	background-color: #449d44;
+	border-color: #398439;
+}
+
+#user-token-reveal-button {
+	background-color: #5bc0de;
+	border-color: #46b8da;
+}
+
+#user-token-reveal-button:hover {
+	background-color: #31b0d5;
+	border-color: #269abc;
+}
+
+#user-token-copy-button {
+	background-color: #5cb85c;
+	border-color: #5cb85c;
+}
+
+#user-token-copy-button:hover {
+	background-color: #449d44;
+	border-color: #449d44;
+}
+
+#user-token-refresh-button {
+	background-color: #f0ad4e;
+	border-color: #eea236;
+}
+
+#user-token-refresh-button:hover {
+	background-color: #ec971f;
+	border-color: #d58512;
+}
+
+
+

@@ -1,39 +1,15 @@
 define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
-function( outputTemplate, settings, transportErrors, BB){
+function( outputTemplate, picsureSettings, transportErrors, BB){
 	
 	var resources = {};
 	
-	_.each(settings.resources, (resource) => {
-		
-		//base resource first; this will be the 'all patients' or main query
-		resources[resource.id] = {
-				id: resource.id,
-				name: resource.name,
-				// Every patient in PL has an age, this is used to get a top level count in the CROSS_COUNT query below
-  				additionalPui: "\\Demographics\\Age\\",
-				patientCount: 0,
-				spinnerClasses: "spinner-center ",
-				spinning: false,
-				isSubQuery: false
-		};
-		
-		//then check to see if we have sub queries for this resource - add those as 'resource' items as well
-		_.each(resource.subQueries, (resource) => {
-  			resources[resource.id] = {
-  					id: resource.id,
-  					name: resource.name,
-  					additionalPui: resource.additionalPui,
-  					patientCount: 0,
-  					spinnerClasses: "spinner-small spinner-small-center ",
-  					spinning: false,
-					isSubQuery: true
-  			};
-		});
-	});
-    
+	
     return {
     	
     	resources: resources,
+    	biosampleFields:  picsureSettings.biosampleFields,
+    	genomicFields: picsureSettings.genomicFields,
+    	
 		/*
 		 * This should be a function that returns the name of a Handlebars
 		 * partial that will be used to render the count. The Handlebars partial
@@ -93,48 +69,70 @@ function( outputTemplate, settings, transportErrors, BB){
 		
 		outputTemplate: outputTemplate,
 		
-		dataCallback: function(result, resultId, model, defaultOutput){
+		allPatientsConcept: "\\Demographics\\Age\\",
+		biobankPatientsConcept: "\\BIOBANK_CONSENTED\\",
+		
+		formatNumber: function(value){
+			value = parseInt(value);
+			
+			if ( value >= 0){
+				return value.toLocaleString();
+			} else {
+				return "-";
+			}
+		},
+		
+		dataCallback: function(crossCounts, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
-
-			_.each(model.get("resources"), function(resource){
-
-				//if this is the main resource query, set total patients
-				if(!resource.isSubQuery){
-					model.set("totalPatients", this.result[resource.additionalPui]);
-					/// set this value so RedCap (data export request) fields will be displayed
-					if(!this.isDefaultQuery(model.get("query"))){
-						model.set("picSureResultId", resultId);
-					} else {
-						model.set("picSureResultId", undefined);
-					}
+			genomicPatientCount = 0;
+			
+			$("#patient-count").html(this.formatNumber(crossCounts[this.allPatientsConcept]));
+			/// set this value so RedCap (data export request) fields will be displayed
+			if(!this.isDefaultQuery(model.get("query"))){
+				model.set("picSureResultId", resultId);
+				$(".picsure-result-id").html(resultId);
+				$(".query-result-container").show(150);
+			} else {
+				model.set("picSureResultId", undefined);
+				$(".picsure-result-id").html("");
+				$(".query-result-container").hide(150);
+			}
+			
+			_.each(this.genomicFields, function(genomicMetadata){
+				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
+				
+				//if crosscount returns error value, don't add it up!
+				if(genomicMetadata.count > 0){
+					genomicPatientCount += genomicMetadata.count;
 				}
 				
-				model.get("resources")[resource.id].queryRan = true;
-				model.get("resources")[resource.id].patientCount = this.result[resource.additionalPui];
-				model.get("resources")[resource.id].spinning = false;
-					
-				if(_.every(model.get("resources"), (resource)=>{return resource.spinning==false})){
-					model.set("spinning", false);
-					model.set("queryRan", true);
-				} else {
-					console.log("still waiting");
-				}
-			}.bind(_.extend(this, {result:result})));
-
-			defaultOutput.render();
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(this.formatNumber(genomicMetadata.count)); 
+			}.bind(this));
+			model.set("totalGenomicData", genomicPatientCount);
+			$("#genomic-count").html(this.formatNumber(genomicPatientCount));
+			
+			_.each(this.biosampleFields, function(biosampleMetadata){
+				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count)); 
+			}.bind(this));
+			
+			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
+			$("#biosamples-count").html(this.formatNumber(crossCounts[this.biobankPatientsConcept]));
+			
+			model.set("spinning", false)
+			$("#spinner-total").hide();
+			
+			
+//			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
 		},
 		
-		errorCallback: function(resource, message, defaultOutput){
+		errorCallback: function( message, defaultOutput){
 			var model = defaultOutput.model;
-			_.each(model.get("resources"),function(resource){
-				resource.queryRan = true;
-				resource.patientCount = '-';
-				resource.spinning = false;
-			});
+			model.set("spinning", false)
+			$("#spinner-total").hide();
 			model.set("totalPatients", '-');
-			model.set("spinning", false);
 			
 			defaultOutput.render();
 			
@@ -148,6 +146,8 @@ function( outputTemplate, settings, transportErrors, BB){
 			var model = defaultOutput.model;
 			model.set("resources", this.resources);
 			model.set("totalPatients",0);
+			model.set("biosampleFields", this.biosampleFields);
+			model.set("genomicFields", this.genomicFields);
 			model.spinAll();
 			
   			defaultOutput.render();
@@ -158,11 +158,10 @@ function( outputTemplate, settings, transportErrors, BB){
 
 			// configure for CROSS_COUNT query type
   			query.query.expectedResultType = 'CROSS_COUNT';
-  			query.query.crossCountFields = [];
-			_.each(model.get("resources"), function(resource){
-				query.query.crossCountFields.push(resource.additionalPui);
-			});
-
+  			query.query.crossCountFields = [this.allPatientsConcept, this.biobankPatientsConcept].concat(
+  					_.pluck(this.genomicFields, "conceptPath"), _.pluck(this.biosampleFields, "conceptPath")
+  			);
+			
 			$.ajax({
 			 	url: window.location.origin + "/picsure/query/sync",
 			 	type: 'POST',
@@ -177,7 +176,7 @@ function( outputTemplate, settings, transportErrors, BB){
 						response.responseText = "<h4>"
 							+ this.outputErrorMessage;
 							+ "</h4>";
-				 		this.errorCallback(resources["PrecisionLink"], response.responseText, defaultOutput);
+				 		this.errorCallback(response.responseText, defaultOutput);
 					}
 				}.bind(this)
 			});

@@ -1,44 +1,46 @@
 {
-  "resources":[
-                {
-                    "id" : "PrecisionLink",
-                    "name" : "PrecisionLink",
-                    "basePath" : "/picsure",
-                    "findPath" : "/PIC-SURE/search",
-					"subQueries" : [
-						{
-							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\SPECIMENS:HF.BLD.000 Quantity\\",
-							"name" : "Whole Blood",
-							"id" : "HumanFluid"
-						},
-						{
-							"additionalPui" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\SPECIMENS:HF.PLS.000 Quantity\\",
-							"name" : "Plasma",
-							"id" : "HumanPlasma"
-						},
-						{
-							"additionalPui" : "\\Bio Specimens\\HumanTissue\\",
-							"name" : "Tissue",
-							"id" : "HumanTissue"
-						},
-						{
-							"additionalPui" : "\\Bio Specimens\\NucleicAcid\\",
-							"name" : "Extracted DNA",
-							"id" : "NucleicAcid"
-						},
-						{
-							"additionalPui" : "\\Next Generation Sequencing\\Exomes\\",
-							"name" : "DNA Sequencing",
-							"id" : "genomicCount",
-							"disabled_additionalVariantCategory": "{\"Variant_severity\": [\"LOW\"]}"
-						}
-					]
-                }
-                ],
+   "genomicFields": [
+    {
+        "label" : "Whole exome",
+        "id": "wholeexome",
+        "conceptPath" : "\\Genomic Batch\\WES\\"
+    },{
+        "label" : "Whole genome",
+        "id": "wholegenome",
+        "conceptPath" : "\\Genomic Batch\\WGS\\"
+    },{
+        "label" : "Genotype array",
+        "id": "genotypearray",
+        "conceptPath" : "\\Genomic Batch\\Genotype array\\"
+    }
+  ], 
+
+   "biosampleFields": [
+    {
+        "label" : "Whole blood",
+        "id": "Wholeblood",
+        "conceptPath" : "\\Bio Specimens\\HumanFluid\\Blood (Whole)\\Blood (Whole)\\SPECIMENS:HF.BLD.000 Quantity\\"
+    },{
+        "label" : "Plasma",
+        "id": "Plasma",
+        "conceptPath" : "\\Bio Specimens\\HumanFluid\\Plasma\\Plasma\\SPECIMENS:HF.PLS.000 Quantity\\"
+    },{
+        "label" : "Tissue",
+        "id": "Tissue",
+        "conceptPath" : "\\Bio Specimens\\HumanTissue\\"
+    },{
+        "label" : "Extracted DNA",
+        "id": "DNA",
+        "conceptPath" : "\\Bio Specimens\\NucleicAcid\\"
+    }
+  ],
+  
+  
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",
   "applicationIdForBaseQuery":"__STACK_SPECIFIC_APPLICATION_ID__",
   "helpLink": "mailto:bchbiobank4discovery@childrens.harvard.edu",
   "pdfLink":"static/user_guide.pdf",
+  "videoLink":"https://youtu.be/GLaYJVkZRAs",
   "categorySearchResultList":["Demographics","Diagnosis","Clinic_Site","Medications","Procedures","Laboratory_Results","Radiology_Tests_Ordered","Clinical_Notes","Vital_Signs","Allergies","Insurance_Payors","Bio_Specimens","Protocols"],
   "timeout": 900,
   "categoryAliases": {
