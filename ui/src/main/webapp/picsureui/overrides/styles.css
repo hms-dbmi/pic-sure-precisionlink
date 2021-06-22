@@ -216,6 +216,13 @@ body {
   opacity: 0;
 }
 
+.outputButton {
+	padding: 7;
+	border: 0;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
 .query-result-container{
 	width: 90%;
 	display: none;
@@ -229,10 +236,6 @@ body {
  .spinner-small-center {
      left: 50%;
      margin-left: -13px;
-}
-
-.copy-button-span {
-	text-align: center;
 }
 
 .copy-button {

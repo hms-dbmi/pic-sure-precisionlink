@@ -194,6 +194,8 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
             sel.removeAllRanges();
             sel.addRange(range);
             document.execCommand("copy");
+            
+            $(".copy-button").html(" Copied! ");
         }
 	};
 });
