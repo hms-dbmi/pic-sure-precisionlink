@@ -209,8 +209,11 @@ body {
 }
 
 .picsure-result-id, .picsure-result-id-label  {
-    text-align: center;
-    display: none;
+  text-align: center;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  opacity: 0;
 }
 
 .query-result-container{
