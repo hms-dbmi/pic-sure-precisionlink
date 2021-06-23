@@ -70,7 +70,7 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 		outputTemplate: outputTemplate,
 		
 		allPatientsConcept: "\\Demographics\\Age\\",
-		biobankPatientsConcept: "\\BIOBANK_CONSENTED\\",
+		biobankPatientsConcept: "\\BIOBANK CONSENTED\\",
 		
 		formatNumber: function(value){
 			value = parseInt(value);
