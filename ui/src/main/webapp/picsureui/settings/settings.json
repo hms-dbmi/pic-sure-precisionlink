@@ -3,15 +3,15 @@
     {
         "label" : "Whole exome",
         "id": "wholeexome",
-        "conceptPath" : "\\Genomic Batch\\WES\\"
+        "conceptPath" : "\\WES\\"
     },{
         "label" : "Whole genome",
         "id": "wholegenome",
-        "conceptPath" : "\\Genomic Batch\\WGS\\"
+        "conceptPath" : "\\WGS\\"
     },{
         "label" : "Genotype array",
         "id": "genotypearray",
-        "conceptPath" : "\\Genomic Batch\\Genotype array\\"
+        "conceptPath" : "\\microarray\\"
     }
   ], 
 
