@@ -35,6 +35,46 @@
     }
   ],
   
+  "genomicBatches" :[
+	   {
+	        "name" : "AllofBCH.PI Mandl.Initiated 2019.Collected 2020 Q3",
+	        "dataType": "Genotype Array",
+	        "diagnosis" : "Various",
+	        "collectionDate": "Q3 2020"
+	    },
+	    {
+	        "name" : "BACH.PI Opotowsky.Dx CHD.Initiated 2018.Collected 2019-Q2.v2",
+	        "dataType": "WES",
+	        "diagnosis" : "Congenital heart disease",
+	        "collectionDate": "Q2 2019"
+	    },
+	    {
+	        "name" : "PL WES.PI Wu.Dx severe asthma.Initiated 2020.Collected 2021 Q2",
+	        "dataType": "WES",
+	        "diagnosis" : "Severe asthma",
+	        "collectionDate": "Q2 2021"
+	    },
+	    {
+	        "name" : "PL WES.PI Yuki.Dx sepsis organ damage.Initiated 2020.Collected 2021 Q2",
+	        "dataType": "WES",
+	        "diagnosis" : "Sepsis organ damage",
+	        "collectionDate": "Q2 2021"
+	    },
+	    {
+	        "name" : "CRDC WES.Initiated 2019.Collected 2021-Q2",
+	        "dataType": "WES",
+	        "diagnosis" : "Children’s Rare Disease Cohorts initiative",
+	        "collectionDate": "Q2 2021"
+	    },
+	    {
+	        "name" : "CRDC WGS.Initiated 2019.Collected 2021-Q2",
+	        "dataType": "WGS",
+	        "diagnosis" : "Children’s Rare Disease Cohorts initiative",
+	        "collectionDate": "Q2 2021"
+	    }
+  
+  ],
+
   
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",
   "applicationIdForBaseQuery":"__STACK_SPECIFIC_APPLICATION_ID__",
