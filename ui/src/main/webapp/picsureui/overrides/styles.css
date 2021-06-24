@@ -330,5 +330,9 @@ body {
 	border-color: #d58512;
 }
 
+/* add space after categories list */
+.data-categories-list {
+	margin-bottom: 90;
+}
 
 
