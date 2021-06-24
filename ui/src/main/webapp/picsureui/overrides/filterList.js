@@ -1,5 +1,5 @@
-define(["jquery", "handlebars", "backbone", "picSure/settings"], 
-function($, HBS, BB, settings){
+define(["jquery", "handlebars", "backbone", "picSure/ontology", "picSure/settings"], 
+function($, HBS, BB, ontology, settings){
 	return {
 		/*
 		 * hook to allow overrides to send more info to the help info modal
