@@ -19,12 +19,7 @@ define(["jquery", "handlebars", "text!footer/footer.hbs", "text!biostats/Biostat
 					betterMap[value.label] = value.count;
 				})
 				
-				footerMsg = "As of " + betterMap["last refresh date"] + 
-			            " Available Biospecimens and Data: " + 
-			            betterMap["patients with phenotype data"] + " enrolled patients with phenotype data. " + 
-			            betterMap["patients with 1+ specimens"] + " patients with 1+ specimens. " + 
-			            betterMap["patients with genomic data"] + " patients with genomic data. " + 
-			            betterMap["specimens"] + " specimens";
+				footerMsg = "Data loaded as of " + betterMap["last refresh date"] ;
 			}
 			catch(err) {
 				footerMsg = err.message;
