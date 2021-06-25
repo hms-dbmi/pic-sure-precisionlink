@@ -330,9 +330,17 @@ body {
 	border-color: #d58512;
 }
 
-/* add space after categories list */
-.data-categories-list {
-	margin-bottom: 90;
+.batch-table-header th {
+	border: 1px solid black;
+	padding: 10;
+	font-weight: bold;
 }
 
+.batch-table-row td {
+	border: 1px solid black;
+	padding: 10;
+}
 
+.small-spacer {
+	height: 4;
+}

@@ -1,5 +1,5 @@
-define(["jquery", "handlebars", "backbone", "picSure/ontology", "picSure/settings"], 
-function($, HBS, BB, ontology, settings){
+define(["jquery", "handlebars", "backbone", "picSure/ontology", "picSure/settings", "text!filter/searchHelpTooltip.hbs"], 
+function($, HBS, BB, ontology, settings, searchHelpTooltipTemplate){
 	return {
 		/*
 		 * hook to allow overrides to send more info to the help info modal
@@ -10,7 +10,7 @@ function($, HBS, BB, ontology, settings){
 	            	
 	            	var modalData = {
 	            		infoColumns: 	ontology.getInstance().allInfoColumns(),
-	            		gemonicBatches: settings.genomicBatches
+	            		genomicBatches: settings.genomicBatches
 	            	};
 	            	
 	                $('#modal-window').html(HBS.compile(searchHelpTooltipTemplate)(modalData));
