@@ -126,6 +126,10 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
 //			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
+			
+			if (defaultOutput.variantExplorerView) {
+				defaultOutput.variantExplorerView.updateQuery(model.get("query"));
+			}
 		},
 		
 		errorCallback: function( message, defaultOutput){
