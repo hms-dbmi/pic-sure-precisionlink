@@ -16,10 +16,10 @@
 	<div class="container institution-results" id="genomic-instances" >		
         <div class="result-list">
 		{{#each genomicFields}}
-				<div class="col-md-6 left"><span>{{label}}:</span></div>
-				<div class="col-md-3 right"><span id="genomic-results-{{id}}-count">-</span>
+				<div class="col-xs-6 left"><span>{{label}}:</span></div>
+				<div class="col-xs-3 right"><span id="genomic-results-{{id}}-count">-</span>
 				</div>
-				<div class="col-md-3"></div><br>
+				<div class="col-xs-3"></div><br>
 		{{/each}}
 		</div>
 	</div>
@@ -48,10 +48,10 @@
 	<div class="container institution-results" id="biosamples-instances" >		
         <div class="result-list">
 		{{#each biosampleFields}}
-				<div class="col-md-6 left"><span>{{label}}:</span></div>
-				<div class="col-md-3 right"><span id="biosamples-results-{{id}}-count">-</span>
+				<div class="col-xs-6 left"><span>{{label}}:</span></div>
+				<div class="col-xs-3 right"><span id="biosamples-results-{{id}}-count">-</span>
 				</div>
-				<div class="col-md-3"></div><br>
+				<div class="col-xs-3"></div><br>
 		{{/each}}
 		</div>
 	</div>
@@ -76,15 +76,16 @@
 		<div class="row center">
 			<form action="https://redcap-qi.tch.harvard.edu/redcap_edc/surveys/" method="get" target="_blank">
 				<input type="hidden" name="s" value="JAXPDW99XD" />
-	 		        <button class="outputButton col-md-12 callToAction bch-tooltip fa fa-lock" type="submit" title="Need to be in BCH network or connected via VPN"> Request specimens and data</button>
+	 		        <button class="outputButton col-xs-12 callToAction bch-tooltip fa fa-lock" type="submit" title="Need to be in BCH network or connected via VPN"> Request specimens and data</button>
 	      		</form>
 		</div>
 		<div class="row">
-			<span class="picsure-result-id col-md-12">{{picSureResultId}}</span><br>
-			<button class="outputButton col-md-12 fa fa-files-o copy-button" title="Copy Query ID"> Copy Query ID</button>
+			<span class="picsure-result-id col-xs-12">{{picSureResultId}}</span><br>
+			<button class="outputButton col-xs-12 fa fa-files-o copy-button" title="Copy Query ID"> Copy Query ID</button>
 		</div>
-		<div class="container" id="variant-data-container">
-	    	<a class="center btn btn-default outputButton hidden" id="variant-data-btn">Variant Explorer</a>
+		<div class="row" id="variant-data-container">
+			<br>
+	    	<a class="outputButton col-xs-12 fa hidden" id="variant-data-btn">Variant Explorer</a>
 			<div id="variant-spinner"></div>
     </div>
 	</div>
