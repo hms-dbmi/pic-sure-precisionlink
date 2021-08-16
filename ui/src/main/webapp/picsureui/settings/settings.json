@@ -78,6 +78,7 @@
   
   "picSureResourceId":"__STACK_SPECIFIC_RESOURCE_UUID__",
   "applicationIdForBaseQuery":"__STACK_SPECIFIC_APPLICATION_ID__",
+  "variantExplorerStatus": "aggregate",
   "helpLink": "mailto:bchbiobank4discovery@childrens.harvard.edu",
   "pdfLink":"static/user_guide.pdf",
   "videoLink":"https://youtu.be/GLaYJVkZRAs",
