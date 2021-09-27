@@ -1,4 +1,4 @@
-define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "handlebars", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "text!../settings/settings.json"],
+define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "handlebars", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "picSure/settings"],
 		function(outputPanel, queryBuilder, searchResult, HBS, searchResultTabsTemplate, searchSubCatTemplate, settings){
 	var searchResults = {
 			init : function(data, view, callback){
@@ -11,10 +11,9 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 		
 		//we want case INsensitive comparisons always
 		searchTerm = searchTerm.toLowerCase();
-		var settingsJson = JSON.parse(settings);
 		var getAliasName = function(key){
-			if(settingsJson.categoryAliases && settingsJson.categoryAliases[key]){
-                return settingsJson.categoryAliases[key];
+			if(settings.categoryAliases && settings.categoryAliases[key]){
+                return settings.categoryAliases[key];
             } else {
                 return key;
             }
