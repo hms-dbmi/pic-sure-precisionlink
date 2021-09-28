@@ -1,4 +1,4 @@
-define(["jquery", "handlebars", "backbone", "text!settings/settings.json","filter/searchResults", "text!filter/noResults.hbs"], 
+define(["jquery", "handlebars", "backbone", "picSure/settings","filter/searchResults", "text!filter/noResults.hbs"], 
 function($, HBS, BB, settings, searchResults, noResultsTemplate){
 	return {
 		/*
@@ -24,7 +24,7 @@ function($, HBS, BB, settings, searchResults, noResultsTemplate){
 			} else {
 				$('.search-tabs', this.$el).html('');
 				this.originalSearchTerm = this.model.get("searchTerm")
-				var categorySearchResultList = JSON.parse(settings).categorySearchResultList;
+				var categorySearchResultList = settings.categorySearchResultList;
 				var searchResultObject = {};
 
 				//inject these category names first so that the results are in a pre-set order

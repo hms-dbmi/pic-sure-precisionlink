@@ -1,4 +1,4 @@
-define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hbs", "picSure/search", "text!settings/settings.json", "treeview"],
+define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hbs", "picSure/search", "picSure/settings", "treeview"],
     function(spinner, BB, HBS, searchResultTemplate, search, settings){
         var searchResultModel = BB.Model.extend({
 
@@ -144,7 +144,6 @@ define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hb
 	            
 	            //automatically run an 'any value' query for categorical filters, or whatever default the settings provide is.
 	            if(this.model.attributes.columnDataType==="CATEGORICAL" || this.model.attributes.columnDataType==="INFO"){
-	                jsonSettings = JSON.parse(settings);
 	                
 	                // if we have a 'pre selected' or default value set that on the filter
 	                var selectedValue = this.model.get("preSelection");
@@ -153,9 +152,9 @@ define(["common/spinner", "backbone", "handlebars", "text!filter/searchResult.hb
 	                	 var partialPath = '';
 	                	 _.each(this.model.get("data").split("\\"), function(segment){
 	                		 partialPath += segment;
-	                		 if(jsonSettings.defaultValues && jsonSettings.defaultValues[partialPath]){
+	                		 if(settings.defaultValues && settings.defaultValues[partialPath]){
 	                			 //don't break out of the loop here; we want more specific defaults to override higher level ones
-	                			 selectedValue = jsonSettings.defaultValues[partialPath];
+	                			 selectedValue = settings.defaultValues[partialPath];
 	                		 }
 	                		 partialPath += "\\";
 	                	 });

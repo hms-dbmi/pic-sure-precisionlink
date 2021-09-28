@@ -1,5 +1,5 @@
 define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
-function( outputTemplate, picsureSettings, transportErrors, BB){
+function( outputTemplate, settings, transportErrors, BB){
 	
 	var resources = {};
 	
@@ -7,8 +7,8 @@ function( outputTemplate, picsureSettings, transportErrors, BB){
     return {
     	
     	resources: resources,
-    	biosampleFields:  picsureSettings.biosampleFields,
-    	genomicFields: picsureSettings.genomicFields,
+    	biosampleFields:  settings.biosampleFields,
+    	genomicFields: settings.genomicFields,
     	
 		/*
 		 * This should be a function that returns the name of a Handlebars
