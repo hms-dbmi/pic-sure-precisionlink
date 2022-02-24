@@ -29,11 +29,3 @@ if ! cmp -s "$DOCKER_CONFIG_DIR/httpd/picsureui_settings.json" "ui/src/main/weba
 	mv $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json.`date +%F_%T`
 	cp ui/src/main/webapp/picsureui/settings/settings.json $DOCKER_CONFIG_DIR/httpd/picsureui_settings.json
 fi
-
-
-if ! cmp -s "$DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf" "ui/httpd-vhosts.conf"  ; then
-	mv $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf.`date +%F_%T`
-	cp ui/httpd-vhosts.conf $DOCKER_CONFIG_DIR/httpd/httpd-vhosts.conf
-fi
-
-
