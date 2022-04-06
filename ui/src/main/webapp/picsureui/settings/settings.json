@@ -29,6 +29,10 @@
         "id": "Tissue",
         "conceptPath" : "\\Bio Specimens\\HumanTissue\\"
     },{
+        "label" : "CSF",
+        "id": "csf",
+        "conceptPath" : "\\Bio Specimens\\HumanFluid\\Brain\\Cerebro-Spinal Fluid (CSF)\\SPECIMENS:HF.BRN.004"
+    },{
         "label" : "Extracted DNA",
         "id": "DNA",
         "conceptPath" : "\\Bio Specimens\\NucleicAcid\\"
