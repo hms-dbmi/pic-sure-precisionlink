@@ -13,7 +13,7 @@ define(["jquery", "handlebars", "text!footer/footer.hbs", "picSure/settings"],
 			if( settings.lastRefreshDate){
 				footerMessage = "Data loaded as of " + settings.lastRefreshDate;
 			}
-			this.$el.html(this.template({ footerMessage : footerMesage }));
+			this.$el.html(this.template({ footerMessage : footerMessage }));
 		}
 	
 	};
