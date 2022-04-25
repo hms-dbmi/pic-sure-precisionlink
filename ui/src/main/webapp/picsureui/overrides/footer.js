@@ -1,5 +1,5 @@
-define(["jquery", "handlebars", "text!footer/footer.hbs", "text!biostats/Biostats_HomePage.json"], 
-		function($, HBS, template, biostats){
+define(["jquery", "handlebars", "text!footer/footer.hbs", "picSure/settings"], 
+		function($, HBS, template, settings){
 	
 	this.template = HBS.compile(template);
 	
@@ -8,24 +8,12 @@ define(["jquery", "handlebars", "text!footer/footer.hbs", "text!biostats/Biostat
 		 * The render function for the footer can be overridden here.
 		 */
 		render : function(){
-			this.$el.html(this.template({ footerMessage : "" }));
 			
-			try{
-				biostatsJson = JSON.parse(biostats);
-				summaries = biostatsJson.Summaries;
-				
-				var betterMap = {};
-				_.map(summaries["Biobank Stats"], function(value){
-					betterMap[value.label] = value.count;
-				})
-				
-				footerMsg = "Data loaded as of " + betterMap["last refresh date"] ;
+			footerMessage = "";
+			if( settings.lastRefreshDate){
+				footerMessage = "Data loaded as of " + settings.lastRefreshDate;
 			}
-			catch(err) {
-				footerMsg = err.message;
-			}
-			
-			$(".center", this.$el).html(footerMsg);
+			this.$el.html(this.template({ footerMessage : footerMesage }));
 		}
 	
 	};
