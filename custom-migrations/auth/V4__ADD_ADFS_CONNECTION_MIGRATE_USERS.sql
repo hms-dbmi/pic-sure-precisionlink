@@ -19,7 +19,7 @@ update user set email=concat('unused_',email) where uuid=0xB04F181FB4BC44548D962
 -- Create an ADFS user for each of the ldap-connector users. 
 -- We preserve the ability to roll back to the ldap-connector if necessary and also preserve the UUIDs for audit purposes
 
-insert into user  (select UNHEX(REPLACE(uuid(), '-', '')), NULL, general_metadata, acceptedTOS, 0xB6BD9D7F9E3311ECA5F4126ACB86EEFB,email,0x00,NULL,0x01,NULL from user where lower(email) like "%childrens%");
+insert into user  (select UNHEX(REPLACE(uuid(), '-', '')), NULL, general_metadata, acceptedTOS, 0xB6BD9D7F9E3311ECA5F4126ACB86EEFB,email,0x00,NULL,is_active,NULL from user where lower(email) like "%childrens%");
 
 -- Assign the same roles to the ADFS users that are assigned to the LDAP users
 
