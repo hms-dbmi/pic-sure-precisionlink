@@ -23,5 +23,5 @@ insert into user  (select UNHEX(REPLACE(uuid(), '-', '')), NULL, general_metadat
 -- Assign the same roles to the ADFS users that are assigned to the LDAP users
 
 insert into user_role (select b.uuid new_uuid, role_id from (select * from user_role left join user on user_id=uuid where connectionId=UNHEX('37604AA86C9611E9A65E0EDC9CE15A6A'))  
-a left join (select * from user where connectionId=UNHEX('B6BD9D7F9E3311ECA5F4126ACB86EEFB')) b on lower( a.email)  like lower(b.email) where a.email like '%childrens%');
+a left join (select * from user where connectionId=UNHEX('B6BD9D7F9E3311ECA5F4126ACB86EEFB')) b on a.email = b.email where a.email like '%childrens%');
 
