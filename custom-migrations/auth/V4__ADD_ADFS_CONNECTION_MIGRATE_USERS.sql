@@ -1,4 +1,3 @@
-use auth
 
 -- Create the connection entity for BCH-ADFS
 
