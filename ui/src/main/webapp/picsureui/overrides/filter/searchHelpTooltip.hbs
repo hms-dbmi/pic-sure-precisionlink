@@ -40,24 +40,18 @@
 <div class="col-md-12 small-spacer"></div>
 <br/>
 <div class="col-md-12">
-<p>When you select a search result, you will be presented with options to filter your subset using this phenotype or variant INFO column. Phenotype filters apply to study participants directly. If you filter by age less than 50, you will only have participants included in your participants counts and export data that match that filter. Variant INFO columns apply to variants that are used to filter patients. In order for participants to be included, it must match ALL of the Phenotype filters that you have created as well as have at least one variant that matches ALL of your variant INFO filters. </p>
+<p>When you select a search result, you will be presented with options to filter your subset using this phenotype or variant annotation. Phenotype filters apply directly to patients. If you filter by age less than 50, you will only have patients included in your patient counts and export data that match that filter. Variant annotations apply to patients' genomic data. In order for patients to be included, they must match ALL of the phenotype filters that you have added to your query as well as have at least one variant that matches ALL of your variant annotation filters. </p>
 </div>
 
 <div class="col-md-12">
-<h3> Available variant INFO columns:  </h3>
-      	<br>
-        <div>
-        	{{#each infoColumns}}<div class="row"><span class="col-md-4">{{key}}</span><span class="col-md-8">{{description}}</span></div><br>{{/each}}</p>
-      	</div>
-     
 	  <p>
 	  </div>
 	  <div class="col-md-12">
-	  You can search for the Batch Name to find a particular batch of genomic data. 
+	  You can search for the Batch Name to find a particular batch of genomic data.
 	  </div>
 	  <div class="col-md-12 small-spacer"></div>
-	  <div class="col-md-12">  
-     
+	  <div class="col-md-12">
+
      <table class="batch-table">
      <tr class="batch-table-header">
      	<th>Batch Name</th>
@@ -65,7 +59,7 @@
      	<th>Diagnosis</th>
      	<th>Data Collection</th>
      </tr>
-     
+
      {{#each genomicBatches}}
 	     <tr class="batch-table-row">
 	     	<td>{{name}}</td>
@@ -74,7 +68,7 @@
 	     	<td>{{collectionDate}}</td>
 	     </tr>
      {{/each}}
-     
+
      </table>
      </div>
       </div> <!-- end modal body -->
