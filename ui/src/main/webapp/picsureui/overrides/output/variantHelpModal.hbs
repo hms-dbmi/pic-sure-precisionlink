@@ -1,0 +1,38 @@
+<div class="modal" id="variant-help-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Variant Explorer</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<p>PrecisionLink users can explore genomic data using <span id='bolded-text'>genomic variant filters</span>. The <span id='bolded-text'>Variant Explorer</span> feature allows users to view the metadata of the variants found in their queried subset. The original sample VCFs are annotated using the Ensembl Variant Effect Predictor (VEP) to determine the effects of each variant, providing additional annotations. </p>
+        <ul>
+            <li>CHROM: Chromosomal location of variant</li>
+            <li>POSITION: Reference position of variant</li>
+            <li>REF: Reference allele</li>
+            <li>ALT: Alternate allele</li>
+            <li>Variant_consequence_calculated: Consequence of variant on a given protein sequence (e.g. stop gained, missense, stop lost, frameshift). Note that this field is most informative when a gene of interest has been specified through the gene_with_variant field)</li>
+            <li>Variant_class: Variant class / type (e.g. SNV, deletion, insertion)</li>
+            <li>Gene_with_variant: Affected gene</li>
+            <li>Variant_severity: The severity of the calculated consequence of a variant on a gene.</li>
+            <li>Variant_frequency_as_text: Frequency of variant found in combined gnomAD populations</li>
+            <li>Patients with this variant in subset: Number of patients in the queried subset who have this variant</li>
+            <li>Patients with this variant NOT in subset: Number of patients not in the queried subset (all other patients in portal) who have this variant</li>
+        </ul>
+        <p><span id='italicized-text'>These fields are most informative when the user has specified the genomic context, such as the gene of interest.</span></p>
+        <p>For more information on VCF file format and our annotation pipeline, visit:</p>
+        <ul>
+            <li><a href="https://samtools.github.io/hts-specs/VCFv4.2.pdf" target='_blank'> https://samtools.github.io/hts-specs/VCFv4.2.pdf </a></li>
+            <li><a href="https://useast.ensembl.org/info/docs/tools/vep/index.html" target='_blank'> https://useast.ensembl.org/info/docs/tools/vep/index.html </a></li>
+            <li><a href="https://github.com/bch-gnome/hpds_annotation" target='_blank'> https://github.com/bch-gnome/hpds_annotation </a></li>
+        </ul>
+      </div> <!-- end modal body -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

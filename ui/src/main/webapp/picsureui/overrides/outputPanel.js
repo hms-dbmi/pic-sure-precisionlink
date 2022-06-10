@@ -1,15 +1,15 @@
-define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", ],
-function( outputTemplate, settings, transportErrors, BB){
-	
+define([ "text!overrides/output/outputPanel.hbs",  "picSure/settings", "common/transportErrors", "backbone", "text!overrides/output/variantHelpModal.hbs", "handlebars"],
+function( outputTemplate, settings, transportErrors, BB, variantHelpModalTemplate, HBS){
+
 	var resources = {};
-	
-	
+
+
     return {
-    	
+
     	resources: resources,
     	biosampleFields:  settings.biosampleFields,
     	genomicFields: settings.genomicFields,
-    	
+
 		/*
 		 * This should be a function that returns the name of a Handlebars
 		 * partial that will be used to render the count. The Handlebars partial
@@ -30,22 +30,22 @@ function( outputTemplate, settings, transportErrors, BB){
 			spinAll: function(){
 				this.set('spinning', true);
 				this.set('queryRan', false);
-	  			
+
 				_.each(resources, function(resource){
 	  				resource.spinning=true;
 	  				resource.queryRan=false;
 	  			});
 			}
 		}),
-		
+
         isDefaultQuery: function(query){
-			return (query.query.requiredFields.length == 0 
-		        && (!query.query.anyRecordOf || query.query.anyRecordOf.length == 0) 
-		      	&& _.keys(query.query.numericFilters).length==0 
+			return (query.query.requiredFields.length == 0
+		        && (!query.query.anyRecordOf || query.query.anyRecordOf.length == 0)
+		      	&& _.keys(query.query.numericFilters).length==0
 				&& _.keys(query.query.categoryFilters).length==0
 				&& (_.keys(query.query.variantInfoFilters).length==0
-						|| (_.keys(query.query.variantInfoFilters).length==1 
-								&& _.keys(query.query.variantInfoFilters[0].categoryVariantInfoFilters).length==0 
+						|| (_.keys(query.query.variantInfoFilters).length==1
+								&& _.keys(query.query.variantInfoFilters[0].categoryVariantInfoFilters).length==0
 								&& _.keys(query.query.variantInfoFilters[0].numericVariantInforFilters).length==0))
 				&& _.keys(query.query.categoryFilters).length==0);
 		},
@@ -66,83 +66,92 @@ function( outputTemplate, settings, transportErrors, BB){
 		 * this
 		 */
 		outputErrorMessage: "A server error occurred. please use the help link for further support.",
-		
+
 		outputTemplate: outputTemplate,
-		
+
 		allPatientsConcept: "\\Demographics\\Age\\",
 		biobankPatientsConcept: "\\BIOBANK CONSENTED\\",
-		
+
 		formatNumber: function(value){
 			value = parseInt(value);
-			
+
 			if ( value >= 0){
 				return value.toLocaleString();
 			} else {
 				return "-";
 			}
 		},
-		
+		openVariantHelpModal: function(){
+			$('#modal-window').html(HBS.compile(variantHelpModalTemplate));
+			$('#modal-window', this.$el).tooltip();
+			$(".close").click(function(){
+				$("#variant-help-modal").hide();
+			});
+			$("#variant-help-modal").show();
+		},
+
 		dataCallback: function(crossCounts, resultId, model, defaultOutput){
 			var model = defaultOutput.model;
 			genomicPatientCount = 0;
-			
+
 			$("#patient-count").html(this.formatNumber(crossCounts[this.allPatientsConcept]));
 			/// set this value so RedCap (data export request) fields will be displayed
 			if(!this.isDefaultQuery(model.get("query"))){
 				model.set("picSureResultId", resultId);
 				$(".picsure-result-id").html(resultId);
 				$(".query-result-container").show(150);
+				$(".variant-explorer-help-icon").click(this.openVariantHelpModal);
 			} else {
 				model.set("picSureResultId", undefined);
 				$(".picsure-result-id").html("");
 				$(".query-result-container").hide(150);
 			}
-			
+
 			_.each(this.genomicFields, function(genomicMetadata){
 				genomicMetadata.count = parseInt(crossCounts[genomicMetadata.conceptPath]);
-				
+
 				//if crosscount returns error value, don't add it up!
 				if(genomicMetadata.count > 0){
 					genomicPatientCount += genomicMetadata.count;
 				}
-				
-				$("#genomic-results-" + genomicMetadata.id + "-count").html(this.formatNumber(genomicMetadata.count)); 
+
+				$("#genomic-results-" + genomicMetadata.id + "-count").html(this.formatNumber(genomicMetadata.count));
 			}.bind(this));
 			model.set("totalGenomicData", genomicPatientCount);
 			$("#genomic-count").html(this.formatNumber(genomicPatientCount));
-			
+
 			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
-				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count)); 
+				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count));
 			}.bind(this));
-			
+
 			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
 			$("#biosamples-count").html(this.formatNumber(crossCounts[this.biobankPatientsConcept]));
-			
+
 			model.set("spinning", false)
 			$("#spinner-total").hide();
-			
-			
+
+
 //			defaultOutput.render();
 			/** Can't extend view event hash because the view object can't find the functions in this override*/
 			$(".copy-button").click(this.copyToken);
-			
+
 			if (defaultOutput.variantExplorerView) {
 				defaultOutput.variantExplorerView.updateQuery(model.get("query"));
 			}
 		},
-		
+
 		errorCallback: function( message, defaultOutput){
 			var model = defaultOutput.model;
 			model.set("spinning", false)
 			$("#spinner-total").hide();
 			model.set("totalPatients", '-');
-			
+
 			defaultOutput.render();
-			
+
 			$("#patient-count").html(message);
 		},
-		
+
 		/*
 		 * The new hook for overriding all custom query logic
 		 */
@@ -153,7 +162,7 @@ function( outputTemplate, settings, transportErrors, BB){
 			model.set("biosampleFields", this.biosampleFields);
 			model.set("genomicFields", this.genomicFields);
 			model.spinAll();
-			
+
   			defaultOutput.render();
 
 			// make a safe deep copy of the incoming query so we don't modify it
@@ -165,7 +174,7 @@ function( outputTemplate, settings, transportErrors, BB){
   			query.query.crossCountFields = [this.allPatientsConcept, this.biobankPatientsConcept].concat(
   					_.pluck(this.genomicFields, "conceptPath"), _.pluck(this.biosampleFields, "conceptPath")
   			);
-			
+
 			$.ajax({
 			 	url: window.location.origin + "/picsure/query/sync",
 			 	type: 'POST',
@@ -186,7 +195,7 @@ function( outputTemplate, settings, transportErrors, BB){
 			});
 
 		},
-		
+
 		copyToken: function(){
             var sel = getSelection();
             var range = document.createRange();
@@ -198,7 +207,7 @@ function( outputTemplate, settings, transportErrors, BB){
             sel.removeAllRanges();
             sel.addRange(range);
             document.execCommand("copy");
-            
+
             $(".copy-button").html(" Copied! ");
         }
 	};

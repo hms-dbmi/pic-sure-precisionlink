@@ -3,12 +3,45 @@
     width: 70%;
     margin: 30px auto;
 }
+.query-result-container{
+    display: inline-block;
+    width: 100%;
+}
+.outputButton{
+    width: 90%;
+    float: right;
+}
+#variant-explorer-div{
+    display: flex;
+}
+.variant-explorer-help-icon{
+    display: flex;
+    width: 10%;
+}
+.query-result-container>.row{
+    margin-left: 0px;
+    margin-right: 40px;
+}
 
-
+#bolded-text{
+    font-weight: bold;
+}
+#italicized-text{
+    font-style: italic;
+}
+.modal-title{
+    width: 100%;
+}
+.modal-header{
+    display: flex;
+}
+.modal-body{
+    overflow-x: hidden;
+}
 
 /** Begin styles immported from datastage **/
 .container {
-    padding-right: 0; 
+    padding-right: 0;
     padding-left: 0;
 }
 
@@ -180,7 +213,7 @@ body {
     padding: 6px 6px;
     width: unset;
    float:right;
-} 
+}
 
 .delete {
     float: right;
