@@ -48,10 +48,12 @@
 	<div class="container institution-results" id="biosamples-instances" >
         <div class="result-list">
 		{{#each biosampleFields}}
+		<div id="results-row-{{id}}">
 				<div class="col-xs-6 left"><span>{{label}}:</span></div>
 				<div class="col-xs-3 right"><span id="biosamples-results-{{id}}-count">-</span>
 				</div>
 				<div class="col-xs-3"></div><br>
+		</div>
 		{{/each}}
 		</div>
 	</div>

@@ -122,7 +122,13 @@ function( outputTemplate, settings, transportErrors, BB, variantHelpModalTemplat
 
 			_.each(this.biosampleFields, function(biosampleMetadata){
 				biosampleMetadata.count = parseInt(crossCounts[biosampleMetadata.conceptPath]);
-				$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count));
+				if(biosampleMetadata.count>-1){
+					$("#biosamples-results-" + biosampleMetadata.id + "-count").html(this.formatNumber(biosampleMetadata.count));
+				}
+				else{
+					$("#results-row-" + biosampleMetadata.id).hide();
+				}
+
 			}.bind(this));
 
 			model.set("totalBiosamples", crossCounts[this.biobankPatientsConcept]);
