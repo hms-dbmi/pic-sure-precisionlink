@@ -85,7 +85,7 @@
   "applicationIdForBaseQuery":"__STACK_SPECIFIC_APPLICATION_ID__",
   "helpLink": "mailto:bchbiobank4discovery@childrens.harvard.edu",
   "pdfLink":"static/user_guide.pdf",
-  "videoLink":"https://youtu.be/GLaYJVkZRAs",
+  "videoLink":"tinyurl.com/precisionlinktrainingvideos",
   "categorySearchResultList":["Demographics","Diagnosis","Clinic_Site","Medications","Procedures","Laboratory_Results","Radiology_Tests_Ordered","Clinical_Notes","Vital_Signs","Allergies","Insurance_Payors","Bio_Specimens","Protocols"],
   "timeout": 900,
   "categoryAliases": {
