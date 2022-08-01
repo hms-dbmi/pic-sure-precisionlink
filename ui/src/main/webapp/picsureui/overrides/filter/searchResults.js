@@ -8,18 +8,30 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 				this.addSearchResultRows(data, view, callback, view.model.get("searchTerm"));
 			}
 	};
-	function getAliasName(key){
-		if(settings.categoryAliases && settings.categoryAliases[key]){
-			return settings.categoryAliases[key];
-		} else {
-			return key;
+	searchResults.addSearchResultRows = function(data, filterView, queryCallback, searchTerm){
+		//track the category results
+		const compiledSubCategoryTemplate = this.searchSubCategories;
+		const compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer;
+
+		//we want case INsensitive comparisons always
+		searchTerm = searchTerm.toLowerCase();
+
+		function getAliasName(key) {
+			if(settings.categoryAliases && settings.categoryAliases[key]){
+                return settings.categoryAliases[key];
+            } else {
+                return key;
+            }
 		}
-	}
-	function getAliasObjects(keys) {
-		let aliasObjects = {}
-		keys.forEach((key) => {
-			let alias = getAliasName(key)
-			let aliasObj = aliasObjects[alias];
+		const categories = _.keys(data);
+		var aliases = [];
+		var aliasObjects = {}
+		categories.forEach((key) => {
+			var alias = getAliasName(key)
+			if(aliases.indexOf(alias) == -1){
+				aliases.push(alias);
+			}
+			var aliasObj = aliasObjects[alias];
 			if(aliasObj){
 				if(!aliasObj[key]){
 					aliasObj[key] = true;
@@ -34,22 +46,10 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 				aliasObjects[alias] = aliasObj;
 			}
 		});
-		return aliasObjects;
-	}
-	searchResults.addSearchResultRows = function(data, filterView, queryCallback, searchTerm){
-		//track the category results
-		const compiledSubCategoryTemplate = this.searchSubCategories;
-		const compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer;
-
-		//we want case INsensitive comparisons always
-		searchTerm = searchTerm.toLowerCase();
-
-		const categories = _.keys(data);
-		let aliases = categories.map(getAliasName);
 
 		$('.search-tabs', filterView.$el).append(this.searchResultTabs({
 			filterId: filterView.model.attributes.filterId, 
-			aliases: getAliasObjects(categories)
+			aliases: aliasObjects
 		}));
 		
 		// -------- Render Categories
@@ -147,7 +147,7 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 				}
 				
 			});
-			
+
 			data[category] = undefined;
 			
 			//check to see if we have any valid results; we may have filtered them all out
@@ -166,42 +166,46 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 				}
 				newSearchResultRow.render();
 			});
+
+			let tabPane = $(`#${alias}.tab-pane`, filterView.$el);
 			
 			// -------- Render Sub Categories
-			let tabPane = $(`#${alias}.tab-pane`, filterView.$el);
-			if(_.keys(subCategories).length > 1){
-				//if no container has been added, add one for the sub categories
-				if($(".subcat-row", tabPane).length == 0) {
-					$(".result-subcategories-div", tabPane).append(compiledSubCategoryContainerTemplate());
-				}
-
-				$(".sub-nav-pills", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
-
-				//bootstap.js is used for the top-level category pills; here we are keeping a bit of the naming scheme
-				// need to roll our own logic so that the 'all results' sub-category tab works as expected
-				$(".sub-nav-pills li", tabPane).click(function(event){
-					event.preventDefault();
-					$(event.target.parentElement).addClass("active")
-					$(event.target.parentElement).siblings().removeClass("active");
-					
-					$('.tab-pane.active').hide();
-					if(event.target.text == "All Results"){
-						_.each(categorySearchResultViews, function(result){
-							result.$el.show();
-						});
-					} else {
-						_.each(categorySearchResultViews, function(result){
-							let resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
-							if(resultPath.length > 1 && resultPath[1] == event.target.text){
-								result.$el.show();
-							} else {
-								result.$el.hide();
-							}
-						});
+			if (settings.includeSubCategories && settings.includeSubCategories.includes(category)) {
+				if(_.keys(subCategories).length > 1){
+					//if no container has been added, add one for the sub categories
+					if($(".subcat-row", tabPane).length == 0) {
+						$(".result-subcategories-div", tabPane).append(compiledSubCategoryContainerTemplate());
 					}
-					$('.tab-pane.active').show();
-				});
+
+					$(".sub-nav-pills", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
+
+					//bootstap.js is used for the top-level category pills; here we are keeping a bit of the naming scheme
+					// need to roll our own logic so that the 'all results' sub-category tab works as expected
+					$(".sub-nav-pills li", tabPane).click(function(event){
+						event.preventDefault();
+						$(event.target.parentElement).addClass("active")
+						$(event.target.parentElement).siblings().removeClass("active");
+						
+						$('.tab-pane.active').hide();
+						if(event.target.text == "All Results"){
+							_.each(categorySearchResultViews, function(result){
+								result.$el.show();
+							});
+						} else {
+							_.each(categorySearchResultViews, function(result){
+								let resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
+								if(resultPath.length > 1 && resultPath[1] == event.target.text){
+									result.$el.show();
+								} else {
+									result.$el.hide();
+								}
+							});
+						}
+						$('.tab-pane.active').show();
+					});
+				}
 			}
+
 			$(".search-result-list", tabPane).append(_.pluck(categorySearchResultViews, "$el"));
 		});
 
