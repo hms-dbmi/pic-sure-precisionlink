@@ -1,9 +1,10 @@
-define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "handlebars", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "picSure/settings"],
-		function(outputPanel, queryBuilder, searchResult, HBS, searchResultTabsTemplate, searchSubCatTemplate, settings){
+define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "text!filter/searchResultSubCategoriesContainer.hbs", "picSure/settings"],
+		function($, searchResult, HBS, searchResultTabsTemplate, searchSubCatTemplate, searchSubCategoriesContainerTemplate, settings){
 	var searchResults = {
 			init : function(data, view, callback){
 				this.searchResultTabs = HBS.compile(searchResultTabsTemplate);
 				this.searchSubCategories = HBS.compile(searchSubCatTemplate);
+				this.searchSubCategoriesContainer = HBS.compile(searchSubCategoriesContainerTemplate)
 				this.addSearchResultRows(data, view, callback, view.model.get("searchTerm"));
 			}
 	};
@@ -46,12 +47,23 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 		var parentCategorySearchResults = [];
 		
 		var compiledSubCategoryTemplate = this.searchSubCategories;
-		$('.search-tabs', filterView.$el).append(this.searchResultTabs(
-				{filterId: filterView.model.attributes.filterId,
-				 aliases: aliasObjects}	));
+		var compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer
+		// filterView.$el.hide();
+		$('.search-tabs', filterView.$el).append(this.searchResultTabs({
+			filterId: filterView.model.attributes.filterId, 
+			aliases: aliasObjects
+		}));
+		
+ 		var categorySearchResultsByAlias = {};
 		keys.forEach((key) => {
 			var subCategories = [];
-			var categorySearchResultViews = [];
+			// var categorySearchResultViews = [];
+			var categorySearchResultViews = categorySearchResultsByAlias[getAliasName(key)];
+			
+			if(!categorySearchResultViews){
+				categorySearchResultViews = [];
+				categorySearchResultsByAlias[getAliasName(key)] = categorySearchResultViews;
+			}
 			_.each(data[key], function(value){
 
 				//trim off leading and trailing slashes.  !! Assume all data starts and ends with '\' !!
@@ -67,9 +79,9 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 				//
 				// Changing to include top level path for categories
 				//
+				before = valuePath
 				
 				for (i = 1; i < valuePath.length - 1; i++) {
-					
 					if(valuePath[i].toLowerCase().includes(searchTerm.toLowerCase())){
 						categoryPath = valuePath.slice(0,i+1).join("\\");
 						//if we have already rendered this parent category, do not add another
@@ -109,7 +121,6 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 						});
 					}
 				}
-				
 				//now build the objects (View/Model) for the results
 				if(matchedSelections.length > 0){
 					//generate an individual search result for categorical values matching the search term.
@@ -134,6 +145,7 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 				}
 				
 				// identify any sub categories, and save them.  do not add a sub category for leaf nodes.  
+				valuePath = value.data.substr(1, value.data.length-2).split('\\');;
 				if(valuePath.length > 2){
 					subCategoryName = valuePath[1];
 					if(subCategories[subCategoryName] ){
@@ -144,6 +156,7 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 				}
 				
 			});
+			// console.log('DEBUG (searchResults, 148): subCategories', subCategories, data[key])
 			data[key] = undefined;
 			
 			//check to see if we have any valid results; we may have filtered them all out
@@ -154,15 +167,29 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 				return true; //then we don't need to worry about doing the subcategory work.
 			}
 
+			
+			
+			
 			_.each(categorySearchResultViews, function(newSearchResultRow){
+        		//something is a little janky here, as we are seeing a funny 'description' string in the value field
+				// for gene info columns.  lets fix it.
+				if(newSearchResultRow.model.get("columnDataType") == "INFO"){
+					newSearchResultRow.model.set("value", newSearchResultRow.model.get("category") );
+				}
 				newSearchResultRow.render();
 			});
 			
 			//save this tab object so we don't keep looking it up
 			var tabPane = $('#'+getAliasName(key)+'.tab-pane', filterView.$el)
-
+			console.log('DEBUG (searchResults, 164): subCategories count', subCategories, _.keys(subCategories).length)
+			
 			if(_.keys(subCategories).length > 1){
-				$(".result-subcategories-div", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
+				//if no container has been added, add one for the sub categories
+				if($(".subcat-row", tabPane).length == 0)
+					$(".result-subcategories-div", tabPane).append(compiledSubCategoryContainerTemplate());
+
+				$(".sub-nav-pills", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
+				// $(".result-subcategories-div", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
 				//bootstap.js is used for the top-level category pills; here we are keeping a bit of the naming scheme
 				// need to roll our own logic so that the 'all results' sub-category tab works as expected
 				$(".sub-nav-pills li", tabPane).click(function(event){
@@ -170,6 +197,7 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 					$(event.target.parentElement).addClass("active")
 					$(event.target.parentElement).siblings().removeClass("active");
 					
+					// $('.tab-pane.active').hide();
 					if(event.target.text == "All Results"){
 						_.each(categorySearchResultViews, function(result){
 							result.$el.show();
@@ -184,6 +212,7 @@ define(["output/outputPanel","picSure/queryBuilder", "filter/searchResult", "han
 							}
 						});
 					}
+					// $('.tab-pane.active').show();
 				});
 			}
 
