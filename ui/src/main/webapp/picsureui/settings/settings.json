@@ -88,12 +88,13 @@
   "videoLink":"httpd://tinyurl.com/precisionlinktrainingvideos",
   "categorySearchResultList":["Demographics","Diagnosis","Clinic_Site","Medications","Procedures","Laboratory_Results","Radiology_Tests_Ordered","Clinical_Notes","Vital_Signs","Allergies","Insurance_Payors","Bio_Specimens","Protocols"],
   "timeout": 900,
+  "includeSubCategories": [ "Clinical_Notes" ],
   "categoryAliases": {
-                        "Notes" : "Clinical_Notes"
-                },
+    "Notes" : "Clinical_Notes"
+  },
   "defaultValues": {
-                   "\\Notes" : "POSITIVE"
-                   },
+    "\\Notes" : "POSITIVE"
+  },
   "queryExportType":"EXPORT_DISABLED",
   "queryButtonLabel":"Prepare Data Export",
   "analyticsId": "UA-70908320-4",
