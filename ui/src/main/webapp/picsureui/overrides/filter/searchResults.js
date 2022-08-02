@@ -21,14 +21,14 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
             }
 		}
 		const categories = _.keys(data);
-		var aliases = [];
-		var aliasObjects = {}
+		let aliases = [];
+		const aliasObjects = {}
 		categories.forEach((key) => {
-			var alias = getAliasName(key)
+			const alias = getAliasName(key)
 			if(aliases.indexOf(alias) == -1){
 				aliases.push(alias);
 			}
-			var aliasObj = aliasObjects[alias];
+			let aliasObj = aliasObjects[alias];
 			if(aliasObj){
 				if(!aliasObj[key]){
 					aliasObj[key] = true;
@@ -46,6 +46,7 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
 
 		//track the category results
 		const parentCategorySearchResults = [];
+
 		const compiledSubCategoryTemplate = this.searchSubCategories;
 		const compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer;
 
@@ -55,7 +56,6 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
 		}));
 		
 		// -------- Render Categories
-		const categorySearchResultsByAlias = {};
 		categories.forEach(category => {
 			const subCategories = [];
 			const categorySearchResultViews = [];
@@ -162,6 +162,7 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
 				newSearchResultRow.render();
 			});
 
+			//save this tab object so we don't keep looking it up
 			let tabPane = $(`#${alias}.tab-pane`, filterView.$el);
 			
 			// -------- Render Sub Categories
@@ -191,7 +192,7 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
 						});
 					} else {
 						_.each(categorySearchResultViews, function(result){
-							let resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
+							const resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
 							if(resultPath.length > 1 && resultPath[1] == event.target.text){
 								result.$el.show();
 							} else {
