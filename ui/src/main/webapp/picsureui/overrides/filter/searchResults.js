@@ -1,5 +1,5 @@
-define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "text!filter/searchResultSubCategoriesContainer.hbs", "picSure/settings"],
-		function($, searchResult, HBS, searchResultTabsTemplate, searchSubCatTemplate, searchSubCategoriesContainerTemplate, settings){
+define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs", "text!filter/searchResultSubCategories.hbs", "text!filter/searchResultSubCategoriesContainer.hbs", "picSure/settings"],
+		function(HBS, searchResult, searchResultTabsTemplate, searchSubCatTemplate, searchSubCategoriesContainerTemplate, settings){
 	const searchResults = {
 			init : function(data, view, callback){
 				this.searchResultTabs = HBS.compile(searchResultTabsTemplate);
