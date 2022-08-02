@@ -136,7 +136,7 @@ define(["handlebars", "filter/searchResult", "text!filter/searchResultTabs.hbs",
 				}
 				
 				// identify any sub categories, and save them.  do not add a sub category for leaf nodes.  
-				valuePath = value.data.substr(1, value.data.length-2).split('\\');;
+				valuePath = value.data.substr(1, value.data.length-2).split('\\');
 				if(valuePath.length > 2){
 					subCategoryName = valuePath[1];
 					if(subCategories[subCategoryName] ){
