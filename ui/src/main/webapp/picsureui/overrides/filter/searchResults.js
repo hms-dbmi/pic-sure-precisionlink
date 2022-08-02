@@ -58,20 +58,15 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 		const categorySearchResultsByAlias = {};
 		categories.forEach(category => {
 			const subCategories = [];
+			const categorySearchResultViews = [];
 			const alias = getAliasName(category);
-
-			let categorySearchResultViews = categorySearchResultsByAlias[alias];
-			if(!categorySearchResultViews){
-				categorySearchResultViews = [];
-				categorySearchResultsByAlias[alias] = categorySearchResultViews;
-			}
 
 			// -------- Render Category values
 			_.each(data[category], function(value){
-				//show only the highest level category or filter matching the search term
-				// trim off leading and trailing slashes.  !! Assume all data starts and ends with '\' !!
+				//trim off leading and trailing slashes.  !! Assume all data starts and ends with '\' !!
 				valuePath = value.data.substr(0, value.data.length-1).split('\\');
 				
+				//show only the highest level category or filter matching the search term
 				//if this gets defined later, it will change filter clicks to 'anyRecordOf' clicks.
 				let categoryPath = undefined;
 				
@@ -164,51 +159,48 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 			}
 
 			_.each(categorySearchResultViews, function(newSearchResultRow){
-        		//something is a little janky here, as we are seeing a funny 'description' string in the value field
-				// for gene info columns.  lets fix it.
-				if(newSearchResultRow.model.get("columnDataType") == "INFO"){
-					newSearchResultRow.model.set("value", newSearchResultRow.model.get("category") );
-				}
 				newSearchResultRow.render();
 			});
 
 			let tabPane = $(`#${alias}.tab-pane`, filterView.$el);
 			
 			// -------- Render Sub Categories
-			if (settings.includeSubCategories && settings.includeSubCategories.includes(category)) {
-				if(_.keys(subCategories).length > 1){
-					//if no container has been added, add one for the sub categories
-					if($(".subcat-row", tabPane).length == 0) {
-						$(".result-subcategories-div", tabPane).append(compiledSubCategoryContainerTemplate());
-					}
-
-					$(".sub-nav-pills", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
-
-					//bootstap.js is used for the top-level category pills; here we are keeping a bit of the naming scheme
-					// need to roll our own logic so that the 'all results' sub-category tab works as expected
-					$(".sub-nav-pills li", tabPane).click(function(event){
-						event.preventDefault();
-						$(event.target.parentElement).addClass("active")
-						$(event.target.parentElement).siblings().removeClass("active");
-						
-						$('.tab-pane.active').hide();
-						if(event.target.text == "All Results"){
-							_.each(categorySearchResultViews, function(result){
-								result.$el.show();
-							});
-						} else {
-							_.each(categorySearchResultViews, function(result){
-								let resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
-								if(resultPath.length > 1 && resultPath[1] == event.target.text){
-									result.$el.show();
-								} else {
-									result.$el.hide();
-								}
-							});
-						}
-						$('.tab-pane.active').show();
-					});
+			if (
+				_.keys(subCategories).length > 1
+				&& settings.includeSubCategories
+				&& settings.includeSubCategories.includes(category)
+			){
+				//if no container has been added, add one for the sub categories
+				if($(".subcat-row", tabPane).length == 0) {
+					$(".result-subcategories-div", tabPane).append(compiledSubCategoryContainerTemplate());
 				}
+
+				$(".sub-nav-pills", tabPane).append(compiledSubCategoryTemplate(_.keys(subCategories)));
+
+				//bootstap.js is used for the top-level category pills; here we are keeping a bit of the naming scheme
+				// need to roll our own logic so that the 'all results' sub-category tab works as expected
+				$(".sub-nav-pills li", tabPane).click(function(event){
+					event.preventDefault();
+					$(event.target.parentElement).addClass("active")
+					$(event.target.parentElement).siblings().removeClass("active");
+					
+					$('.tab-pane.active').hide();
+					if(event.target.text == "All Results"){
+						_.each(categorySearchResultViews, function(result){
+							result.$el.show();
+						});
+					} else {
+						_.each(categorySearchResultViews, function(result){
+							let resultPath = result.model.attributes.data.substr(1, result.model.attributes.data.length-2).split('\\');
+							if(resultPath.length > 1 && resultPath[1] == event.target.text){
+								result.$el.show();
+							} else {
+								result.$el.hide();
+							}
+						});
+					}
+					$('.tab-pane.active').show();
+				});
 			}
 
 			$(".search-result-list", tabPane).append(_.pluck(categorySearchResultViews, "$el"));
