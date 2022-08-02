@@ -9,14 +9,11 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 			}
 	};
 	searchResults.addSearchResultRows = function(data, filterView, queryCallback, searchTerm){
-		//track the category results
-		const compiledSubCategoryTemplate = this.searchSubCategories;
-		const compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer;
 
 		//we want case INsensitive comparisons always
 		searchTerm = searchTerm.toLowerCase();
 
-		function getAliasName(key) {
+		const getAliasName = function(key){
 			if(settings.categoryAliases && settings.categoryAliases[key]){
                 return settings.categoryAliases[key];
             } else {
@@ -47,34 +44,42 @@ define(["jquery", "filter/searchResult", "handlebars", "text!filter/searchResult
 			}
 		});
 
+		//track the category results
+		const parentCategorySearchResults = [];
+		const compiledSubCategoryTemplate = this.searchSubCategories;
+		const compiledSubCategoryContainerTemplate = this.searchSubCategoriesContainer;
+
 		$('.search-tabs', filterView.$el).append(this.searchResultTabs({
 			filterId: filterView.model.attributes.filterId, 
 			aliases: aliasObjects
 		}));
 		
 		// -------- Render Categories
- 		const categorySearchResultsByAlias = {};
+		const categorySearchResultsByAlias = {};
 		categories.forEach(category => {
 			const subCategories = [];
 			const alias = getAliasName(category);
 
-			// -------- Render Category values
 			let categorySearchResultViews = categorySearchResultsByAlias[alias];
 			if(!categorySearchResultViews){
 				categorySearchResultViews = [];
 				categorySearchResultsByAlias[alias] = categorySearchResultViews;
 			}
 
-			const parentCategorySearchResults = [];
+			// -------- Render Category values
 			_.each(data[category], function(value){
+				//show only the highest level category or filter matching the search term
 				// trim off leading and trailing slashes.  !! Assume all data starts and ends with '\' !!
 				valuePath = value.data.substr(0, value.data.length-1).split('\\');
+				
+				//if this gets defined later, it will change filter clicks to 'anyRecordOf' clicks.
 				let categoryPath = undefined;
 				
 				//loop over all of the categories; do not evaluate the final leaf node (we know it matches from the previous case)
 				for (i = 1; i < valuePath.length - 1; i++) {
 					if(valuePath[i].toLowerCase().includes(searchTerm.toLowerCase())){
 						categoryPath = valuePath.slice(0,i+1).join("\\");
+						//if we have already rendered this parent category, do not add another
 						
 						if(parentCategorySearchResults[categoryPath]){
 							return true;
