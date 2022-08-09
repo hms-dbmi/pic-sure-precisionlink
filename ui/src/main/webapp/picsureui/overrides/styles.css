@@ -318,9 +318,6 @@ body {
     font-size: 2em;
 }
 
-.glyphicon {
-	color: gray;
-}
 
 /* restore correct coloring for user profile buttons */
 #user-token-copy-button {
